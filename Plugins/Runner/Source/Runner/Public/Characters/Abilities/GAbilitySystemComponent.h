@@ -13,5 +13,8 @@ UCLASS()
 class RUNNER_API UGAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	bool bCharacterAbilitiesGiven = false;
+	bool bStartupEffectsApplied = false;
 };
