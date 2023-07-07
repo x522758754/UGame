@@ -174,10 +174,4 @@ protected:
 
 	UFUNCTION()
 	virtual void OnRep_GoldBounty(const FGameplayAttributeData& OldGoldBounty);
-
-private:
-	FGameplayTag HitDirectionFrontTag;
-	FGameplayTag HitDirectionBackTag;
-	FGameplayTag HitDirectionRightTag;
-	FGameplayTag HitDirectionLeftTag;
 };

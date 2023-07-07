@@ -38,7 +38,7 @@ public:
 
 	// Switch on AbilityID to return individual ability levels. Hardcoded to 1 for every ability in this project.
 	UFUNCTION(BlueprintCallable)
-	virtual int32 GetAbilityLevel(EGDAbilityInputID AbilityID) const;
+	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID) const;
 
 	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
 	virtual void RemoveCharacterAbilities();
@@ -103,18 +103,7 @@ protected:
 	virtual void SetStamina(float Stamina);
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag HitDirectionFrontTag;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag HitDirectionBackTag;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag HitDirectionRightTag;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag HitDirectionLeftTag;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag DeadTag;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag EffectRemoveOnDeathTag;
+
 protected:
 
 	TWeakObjectPtr<class UGAbilitySystemComponent> AbilitySystemComponent;

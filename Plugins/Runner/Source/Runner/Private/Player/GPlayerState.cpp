@@ -3,7 +3,7 @@
 
 #include "Player/GPlayerState.h"
 
-#include "Characters/Abilities/GAbilitySystemComponent.h"
+#include "AbilitySystem/GAbilitySystemComponent.h"
 
 AGPlayerState::AGPlayerState(const FObjectInitializer& ObjectInitializer):
 	Super(ObjectInitializer)

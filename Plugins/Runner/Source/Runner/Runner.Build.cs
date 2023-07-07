@@ -42,6 +42,8 @@ public class Runner : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"AIModule",
+				"DeveloperSettings", 
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

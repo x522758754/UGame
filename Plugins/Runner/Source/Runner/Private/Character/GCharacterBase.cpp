@@ -1,18 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/GCharacterBase.h"
+#include "Character/GCharacterBase.h"
 
-#include "GAbilityDefine.h"
-#include "GGameplayAbility.h"
-#include "Characters/Abilities/Attributes/GAttributeSetBase.h"
+#include "AbilitySystem/GGameplayTags.h"
+#include "AbilitySystem/GAbilityDefine.h"
+#include "AbilitySystem/GGameplayAbility.h"
+#include "AbilitySystem/Attributes/GAttributeSetBase.h"
 #include "Components/CapsuleComponent.h"
-#include "Characters/Abilities/GAbilitySystemComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "AbilitySystem/GAbilitySystemComponent.h"
+#include "Character/Component/GCharacterMovementComponent.h"
 
 // Sets default values
 AGCharacterBase::AGCharacterBase(const class FObjectInitializer& ObjectInitializer) :
-	Super(/*ObjectInitializer.SetDefaultSubobjectClass<UGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName)*/)
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -20,14 +21,6 @@ AGCharacterBase::AGCharacterBase(const class FObjectInitializer& ObjectInitializ
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
 
 	bAlwaysRelevant = true;
-
-	// Cache tags
-	HitDirectionFrontTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front"));
-	HitDirectionBackTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Back"));
-	HitDirectionRightTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Right"));
-	HitDirectionLeftTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left"));
-	DeadTag = FGameplayTag::RequestGameplayTag(FName("State.Dead"));
-	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag(FName("Effect.RemoveOnDeath"));
 }
 
 UAbilitySystemComponent* AGCharacterBase::GetAbilitySystemComponent() const
@@ -40,7 +33,7 @@ bool AGCharacterBase::IsAlive() const
 	return GetHealth() > 0.0f;
 }
 
-int32 AGCharacterBase::GetAbilityLevel(EGDAbilityInputID AbilityID) const
+int32 AGCharacterBase::GetAbilityLevel(EGAbilityInputID AbilityID) const
 {
 	return 1;
 }
@@ -56,10 +49,10 @@ void AGCharacterBase::RemoveCharacterAbilities()
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
 	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
 	{
-		// if ((Spec.SourceObject == this) && CharacterAbilities.Contains(Spec.Ability->GetClass()))
-		// {
-		// 	AbilitiesToRemove.Add(Spec.Handle);
-		// }
+		if ((Spec.SourceObject == this) && CharacterAbilities.Contains(Spec.Ability->GetClass()))
+		{
+			AbilitiesToRemove.Add(Spec.Handle);
+		}
 	}
 
 	// Do in two passes so the removal happens after we have the full list
@@ -114,19 +107,19 @@ void AGCharacterBase::PlayHitReact_Implementation(FGameplayTag HitDirection, AAc
 {
 	if (IsAlive())
 	{
-		if (HitDirection == HitDirectionLeftTag)
+		if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Left )
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Left);
 		}
-		else if (HitDirection == HitDirectionFrontTag)
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Front)
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Front);
 		}
-		else if (HitDirection == HitDirectionRightTag)
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Right)
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Right);
 		}
-		else if (HitDirection == HitDirectionBackTag)
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Back )
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Back);
 		}
@@ -245,10 +238,10 @@ void AGCharacterBase::Die()
 		AbilitySystemComponent->CancelAllAbilities();
 
 		FGameplayTagContainer EffectTagsToRemove;
-		EffectTagsToRemove.AddTag(EffectRemoveOnDeathTag);
+		EffectTagsToRemove.AddTag(FGGameplayTags::Get().Effect_RemoveOnDeath);
 		int32 NumEffectsRemoved = AbilitySystemComponent->RemoveActiveEffectsWithTags(EffectTagsToRemove);
 
-		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
+		AbilitySystemComponent->AddLooseGameplayTag(FGGameplayTags::Get().State_Dead);
 	}
 
 	// if (DeathMontage)

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/Abilities/GGameplayAbility.h"
+#include "AbilitySystem/GGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayTagContainer.h"
 

@@ -1,22 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Characters/Abilities/Attributes/GAttributeSetBase.h"
+#include "AbilitySystem/Attributes/GAttributeSetBase.h"
 #include "GameplayEffect.h"
 #include "GameplayEffectExtension.h"
 #include "GameplayTagContainer.h"
+#include "AbilitySystem/GGameplayTags.h"
 #include "Player/GPlayerController.h"
-#include "Characters/GCharacterBase.h"
+#include "Character/GCharacterBase.h"
 #include "Net/UnrealNetwork.h"
-#include "Characters/GAbilityDefine.h"
+#include "AbilitySystem/GAbilityDefine.h"
 
 UGAttributeSetBase::UGAttributeSetBase()
 {
-	// Cache tags
-	HitDirectionFrontTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Front"));
-	HitDirectionBackTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Back"));
-	HitDirectionRightTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Right"));
-	HitDirectionLeftTag = FGameplayTag::RequestGameplayTag(FName("Effect.HitReact.Left"));
 }
 
 
@@ -146,23 +142,23 @@ void UGAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallb
 					switch (HitDirection)
 					{
 					case EGDHitReactDirection::Left:
-						TargetCharacter->PlayHitReact(HitDirectionLeftTag, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Left, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Front:
-						TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Front, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Right:
-						TargetCharacter->PlayHitReact(HitDirectionRightTag, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Right, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Back:
-						TargetCharacter->PlayHitReact(HitDirectionBackTag, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Back, SourceCharacter);
 						break;
 					}
 				}
 				else
 				{
 					// No hit result. Default to front.
-					TargetCharacter->PlayHitReact(HitDirectionFrontTag, SourceCharacter);
+					TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Front, SourceCharacter);
 				}
 
 				// Show damage number for the Source player unless it was self damage

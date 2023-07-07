@@ -20,7 +20,7 @@ enum class EGDHitReactDirection : uint8
 };
 
 UENUM(BlueprintType)
-enum class EGDAbilityInputID : uint8
+enum class EGAbilityInputID : uint8
 {
 	// 0 None
 	None			UMETA(DisplayName = "None"),

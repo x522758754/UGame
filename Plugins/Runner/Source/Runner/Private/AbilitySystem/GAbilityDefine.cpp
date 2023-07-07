@@ -1,6 +1,6 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GAbilityDefine.h"
+#include "AbilitySystem/GAbilityDefine.h"
 
 

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GAbilityDefine.h"
-#include "Characters/GAbilityDefine.h"
+#include "AbilitySystem//GAbilityDefine.h"
 #include "Abilities/GameplayAbility.h"
 #include "GGameplayAbility.generated.h"
 
@@ -21,12 +21,12 @@ public:
 
 	// Abilities with this set will automatically activate when the input is pressed
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	EGDAbilityInputID AbilityInputID = EGDAbilityInputID::None;
+	EGAbilityInputID AbilityInputID = EGAbilityInputID::None;
 
 	// Value to associate an ability with an slot without tying it to an automatically activated input.
 	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
-	EGDAbilityInputID AbilityID = EGDAbilityInputID::None;
+	EGAbilityInputID AbilityID = EGAbilityInputID::None;
 
 	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilities forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
