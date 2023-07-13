@@ -5,6 +5,7 @@
 
 #include "System/GGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Loading/GLevelLoadingOpenLevel.h"
 
 TWeakObjectPtr<UGLevelSubsystem> UGLevelSubsystem::s_Instance =	nullptr;
 
@@ -22,9 +23,37 @@ UGLevelSubsystem* UGLevelSubsystem::Get()
 	return s_Instance.Get();
 }
 
-void UGLevelSubsystem::TravelLevel(const FString& Url)
+const FString& UGLevelSubsystem::GetOpenLevelName() const
 {
-	//GetWorld()->ServerTravel(Url);
-	UGameplayStatics::OpenLevel(GetWorld(), FName(Url));
+	return OpenLevelName;
+}
+
+void UGLevelSubsystem::ChangeLevel(const FString& LevelName)
+{
+	BeginLoading(ELoadingType::OpenLevel, LevelName);
+	OpenLevelName = LevelName;
+	OpenLevelLoaded = false;
+	UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName));
+}
+
+
+void UGLevelSubsystem::BeginLoading(ELoadingType Type, const FString& LevelId)
+{
+	CurrentLoadingType = Type;
+	if (Type < ELoadingType::Dynamic || Type >= ELoadingType::Num)
+	{
+		UE_LOG(LogTemp, Fatal, TEXT("UGLevelSubsystem::SetLoadingType Error Type, %d"), Type);
+		return;
+	}
+	switch (Type)
+	{
+	case ELoadingType::OpenLevel:
+		CurrentLoading = MakeShared<FGLevelLoadingOpenLevel>();
+		break;
+	default:
+		UE_LOG(LogTemp, Fatal, TEXT("UGLevelSubsystem::SetLoadingType %d"), Type);
+		return;
+	}
+	CurrentLoading->Begin(LevelId);
 }
 

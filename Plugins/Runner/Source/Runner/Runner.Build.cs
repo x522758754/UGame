@@ -44,6 +44,7 @@ public class Runner : ModuleRules
 				"SlateCore",
 				"AIModule",
 				"DeveloperSettings", 
+				"UMG",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

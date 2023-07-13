@@ -21,14 +21,14 @@ public:
 
 public:
 	/** The specific map to load */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedTypes="Map"))
-	FPrimaryAssetId MapID;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedClasses="/Script/Engine.World"))
+	FSoftObjectPath MapLevel;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<FString, FString> ExtraArgs;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedTypes="Map"))
-	FPrimaryAssetId NextMapID;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedClasses="/Script/Engine.World"))
+	FSoftObjectPath NextMapLevel;
 };
 
 

@@ -6,15 +6,7 @@
 
 FString UGLevelData::GetMapName() const
 {
-	FAssetData MapAssetData;
-	if (UGAssetManager::Get()->GetPrimaryAssetData(MapID, /*out*/ MapAssetData))
-	{
-		return MapAssetData.PackageName.ToString();
-	}
-	else
-	{
-		return FString();
-	}
+	return MapLevel.ToString();
 }
 
 FString UGLevelData::ConstructTravelURL() const

@@ -28,7 +28,7 @@ void UGGameInstance::Init()
 	UGLevelData* Data = UGAssetManager::Get()->GetAsset(UGGameConfigSettings::Get()->InitLevelData);
 	if(Data)
 	{
-		UGLevelSubsystem::Get()->TravelLevel(Data->ConstructTravelURL());
+		UGLevelSubsystem::Get()->ChangeLevel(Data->ConstructTravelURL());
 	}
 }
 
