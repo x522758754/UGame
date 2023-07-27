@@ -40,8 +40,6 @@ void AGPlayerCameraManager::BeginPlay()
 		ActiveCamera = GetWorld()->SpawnActor<AGCameraActor>(AGCameraActor::StaticClass(), SpawnInfo);
 	}
 	SetViewTarget(ActiveCamera.Get());
-
-	SetPitch(-89.f, true);
 }
 
 void AGPlayerCameraManager::Tick(float DeltaSeconds)
@@ -141,6 +139,26 @@ void AGPlayerCameraManager::ApplyCacheParam(bool bImmediately)
 void AGPlayerCameraManager::ClearCacheParam()
 {
 	CachedParam.IsValid = false;
+}
+
+void AGPlayerCameraManager::SetCameraParam(const FGCameraParam& Param, bool bImmediately)
+{
+	SetRoll(Param.Roll, bImmediately);
+	SetPitch(Param.Pitch, bImmediately);
+	SetYaw(Param.Yaw, bImmediately);
+	SetDistance(Param.Distance, bImmediately);
+}
+
+void AGPlayerCameraManager::SetRoll(float Roll, bool bImmediately)
+{
+	CullDeg(Roll);
+	TargetParam.Roll = Roll;
+	if(bImmediately)
+	{
+		CurrentParam.Roll = TargetParam.Roll;
+		RefreshParam();
+	}
+	ParamDirty = true;
 }
 
 void AGPlayerCameraManager::SetPitch(float Pitch, bool bImmediately)
@@ -260,7 +278,7 @@ void AGPlayerCameraManager::RefreshParam()
 	FTransform Transform;
 
 	//朝向
-	const FRotator Rotator(CurrentParam.Pitch, CurrentParam.Yaw, 0);
+	const FRotator Rotator(CurrentParam.Pitch, CurrentParam.Yaw, CurrentParam.Roll);
 	Transform.SetRotation( FQuat(Rotator) );
 
 	//FRotationMatrix BaseRayMatrix(Rotator);

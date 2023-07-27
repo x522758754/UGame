@@ -3,10 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/GCameraDef.h"
 #include "Engine/DeveloperSettings.h"
+#include "Config/GConfigData.h"
 #include "GGameConfigSettings.generated.h"
 
-class UGLevelData;
+class AGHeroCharacter;
+class AGCameraActor;
 
 /**
  * 
@@ -25,6 +28,21 @@ public:
 	virtual FName GetCategoryName() const override{return "Game";}
 public:
 
+	UPROPERTY(Config, noclear, EditAnywhere)
+	TSoftObjectPtr<UGConfigData> ConfigDataPath;
+
+	UPROPERTY(Config, noclear, EditAnywhere)
+	TSoftClassPtr<AGCameraActor> Camera;
+	
 	UPROPERTY(config, noclear, EditAnywhere)
-	TSoftObjectPtr<UGLevelData> InitLevelData;
+	int32 DefaultLevelId = 1;
+	
+	UPROPERTY(config)
+	int32 DefaultCameraId = 1;
+
+	UPROPERTY(config, noclear, EditAnywhere)
+	FGCameraParam DefaultCameraParam;
+
+	UPROPERTY(config, noclear, EditAnywhere)
+	int32 DefaultHeroId = 1;
 };

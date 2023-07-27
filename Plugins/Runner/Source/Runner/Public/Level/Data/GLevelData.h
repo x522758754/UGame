@@ -2,25 +2,15 @@
 
 #pragma once
 
-#include "Engine/DataAsset.h"
-#include "UObject/PrimaryAssetId.h"
-
+#include "CoreMinimal.h"
 #include "GLevelData.generated.h"
 
-
-/** Description of settings used to display experiences in the UI and start a new session */
-UCLASS(BlueprintType)
-class RUNNER_API UGLevelData : public UPrimaryDataAsset
+USTRUCT(BlueprintType)
+struct RUNNER_API FGLevelConfig
 {
 	GENERATED_BODY()
-
-public:
-	virtual FString GetMapName() const;
-
-	virtual FString ConstructTravelURL() const;
-
-public:
-	/** The specific map to load */
+	
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedClasses="/Script/Engine.World"))
 	FSoftObjectPath MapLevel;
 
@@ -29,6 +19,13 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta=(AllowedClasses="/Script/Engine.World"))
 	FSoftObjectPath NextMapLevel;
-};
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FTransform BornTransform;
+
+public:
+	FString GetMapName() const;
+
+	FString ConstructTravelURL() const;
+};
 

@@ -62,10 +62,10 @@ void FGLevelLoadingBase::SetCurrentStage(int Stage)
 	}
 }
 
-void FGLevelLoadingBase::Begin(const FString& LevelId)
+void FGLevelLoadingBase::Begin(int32 LevelId)
 {
 	LoadingLevelId = LevelId;
-	UGEventBasicFunctions::Dispatch(EGEventBasic::LevelLoadStart, LevelId);
+	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadStart, LevelId);
 	
 	SetCurrentStage(0);
 	Progress = 0;
@@ -74,7 +74,7 @@ void FGLevelLoadingBase::Begin(const FString& LevelId)
 void FGLevelLoadingBase::LoadEnd()
 {
 	UE_LOG(LogTemp, Log, TEXT("FGLevelLoading::LoadEnd"))
-	UGEventBasicFunctions::Dispatch(EGEventBasic::LevelLoadEnd);
+	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadEnd);
 }
 
 bool FGLevelLoadingBase::IsStreamingCompleted(const FVector& Location)

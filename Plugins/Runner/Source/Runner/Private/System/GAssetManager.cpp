@@ -3,6 +3,7 @@
 
 #include "System/GAssetManager.h"
 #include "AbilitySystemGlobals.h"
+#include "Config/GGameConfigSettings.h"
 #include "AbilitySystem/GGameplayTags.h"
 
 
@@ -28,6 +29,13 @@ void UGAssetManager::StartInitialLoading()
 
 	FGGameplayTags::InitializeNativeTags();
 	UAbilitySystemGlobals::Get().InitGlobalData();
+
+	ConfigData = LoadAsset(UGGameConfigSettings::Get()->ConfigDataPath);
+}
+
+UGConfigData* UGAssetManager::GetConfigData()
+{
+	return ConfigData;
 }
 
 UObject* UGAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetPath)
@@ -51,6 +59,20 @@ UObject* UGAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetPath)
 	}
 
 	return nullptr;
+}
+
+TSharedPtr<FStreamableHandle> UGAssetManager::AsyncLoadAsset(const FSoftObjectPath& AssetPath, TFunction<void(UObject*)> Callback, EGLoadPriority Priority)
+{
+	if (!IsValid() || !AssetPath.IsValid())
+	{
+		if(Callback)
+		{
+			Callback(nullptr);
+		}
+		return nullptr;
+	}
+
+	return GetStreamableManager().RequestAsyncLoad(AssetPath, FStreamableDelegate(), (int32)Priority);
 }
 
 bool UGAssetManager::ShouldLogAssetLoads()

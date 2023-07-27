@@ -11,11 +11,11 @@ public:
 public:
 	virtual void OnTick(float DeltaTime);
 public:
-	virtual void Begin(const FString& LevelId);
+	virtual void Begin(int32 LevelId);
 	virtual void LoadEnd();
 	float GetProgress() const { return Progress; }
 
-	const FString& GetLoadingLevelId() const {return LoadingLevelId;}
+	int32 GetLoadingLevelId() const {return LoadingLevelId;}
 protected:
 	void SetCurrentStage(int Stage);
 protected:
@@ -33,5 +33,5 @@ protected:
 	float CurrentStageProgress = 0;
 	float PrevStateProgress = 0;
 
-	FString LoadingLevelId;
+	int32 LoadingLevelId;
 };

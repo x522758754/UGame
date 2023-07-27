@@ -4,12 +4,12 @@
 #include "Level/Data/GLevelData.h"
 #include "System/GAssetManager.h"
 
-FString UGLevelData::GetMapName() const
+FString FGLevelConfig::GetMapName() const
 {
 	return MapLevel.ToString();
 }
 
-FString UGLevelData::ConstructTravelURL() const
+FString FGLevelConfig::ConstructTravelURL() const
 {
 	FString CombinedExtraArgs;
 	

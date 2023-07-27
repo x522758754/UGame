@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
+#include "System/GGameInstanceSubsystem.h"
+#include "Event/GEventObserverHolder.h"
 #include "GLevelSubsystem.generated.h"
 
 class FGLevelLoadingBase;
@@ -11,7 +12,7 @@ class FGLevelLoadingBase;
  * 
  */
 UCLASS()
-class RUNNER_API UGLevelSubsystem : public UGameInstanceSubsystem
+class RUNNER_API UGLevelSubsystem : public UGGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
@@ -30,20 +31,27 @@ public:
 	static UGLevelSubsystem* Get();
 protected:
 	static TWeakObjectPtr<UGLevelSubsystem> s_Instance;
-public:
-	const FString& GetOpenLevelName() const;
-	void ChangeLevel(const FString& LevelId);
 protected:
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
-
+	virtual void OnGameInstanceInit() override;
+	virtual void OnTick(float DeltaTime) override;
+	
+	void OnMapLoadComplete(const float LoadTime, const FString& MapName);
+	void OnLevelLoaded();
+public:
+	int32 GetOpenLevelId() const;
+	void ChangeLevel(int32 LevelId);
+	
 protected:
-	void BeginLoading(ELoadingType Type, const FString& LevelId);
+	void BeginLoading(ELoadingType Type, int32 LevelId);
 private:
 	//Level
 	bool OpenLevelLoaded = false;
-	FString OpenLevelName;
+	int32 OpenLevelId;
 
 	//Loading
 	TSharedPtr<FGLevelLoadingBase> CurrentLoading;
 	ELoadingType CurrentLoadingType;
+
+	FGEventObserverHolder EventObserverHolder;
 };

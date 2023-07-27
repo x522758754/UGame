@@ -19,7 +19,7 @@ FGLevelLoadingOpenLevel::FGLevelLoadingOpenLevel()
 void FGLevelLoadingOpenLevel::OnTick(float DeltaTime)
 {
 	FGLevelLoadingBase::OnTick(DeltaTime);
-	if(UGLevelSubsystem::Get()->GetOpenLevelName() == GetLoadingLevelId())
+	if(UGLevelSubsystem::Get()->GetOpenLevelId() != GetLoadingLevelId())
 	{
 		return;
 	}

@@ -10,15 +10,20 @@
 #include "Components/CapsuleComponent.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "Character/Component/GCharacterMovementComponent.h"
+#include "Character/GCharacterInfoComponent.h"
+
+FName AGCharacterBase::InfoComponentName(TEXT("InfoComponent"));
 
 // Sets default values
-AGCharacterBase::AGCharacterBase(const class FObjectInitializer& ObjectInitializer) :
+AGCharacterBase::AGCharacterBase(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
+
+	InfoComponent = CreateDefaultSubobject<UGCharacterInfoComponent>(InfoComponentName);
 
 	bAlwaysRelevant = true;
 }

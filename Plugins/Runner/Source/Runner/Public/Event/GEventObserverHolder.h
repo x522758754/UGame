@@ -12,7 +12,7 @@ public:
 	void UnObserver();
 
 	template <typename ...Args>
-	void Observe(EGEventBasic Event, const TFunction<void(Args...)>& Observer){
+	void Observe(EGEventType Event, const TFunction<void(Args...)>& Observer){
 		AddGuid(
 			UGEventSubsystem::Get()->Observe(static_cast<int>(Event), Observer)
 		);

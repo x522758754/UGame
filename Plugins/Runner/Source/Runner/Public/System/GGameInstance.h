@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class RUNNER_API UGGameInstance : public UGameInstance
+class RUNNER_API UGGameInstance : public UGameInstance, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -26,6 +26,9 @@ protected:
 	virtual void Shutdown() override;
 	virtual void LoadComplete(const float LoadTime, const FString& MapName) override;
 	virtual void OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld) override;
+
+	virtual TStatId GetStatId() const override;
+	virtual void Tick( float DeltaTime ) override;
 protected:
 	static TWeakObjectPtr<UGGameInstance> GameInstancePtr;
 };

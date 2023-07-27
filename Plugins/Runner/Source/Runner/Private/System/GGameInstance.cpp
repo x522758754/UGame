@@ -6,6 +6,7 @@
 #include "Level/GLevelSubsystem.h"
 #include "Level/Data/GLevelData.h"
 #include "System/GAssetManager.h"
+#include "System/GGameInstanceSubsystem.h"
 
 
 TWeakObjectPtr<UGGameInstance> UGGameInstance::GameInstancePtr;
@@ -24,12 +25,14 @@ void UGGameInstance::Init()
 {
 	Super::Init();
 	GameInstancePtr = this;
-
-	UGLevelData* Data = UGAssetManager::Get()->GetAsset(UGGameConfigSettings::Get()->InitLevelData);
-	if(Data)
+	
+	const TArray<UGGameInstanceSubsystem*>& SubsystemArray = GetSubsystemArray<UGGameInstanceSubsystem>();
+	for(UGGameInstanceSubsystem* Subsystem : SubsystemArray)
 	{
-		UGLevelSubsystem::Get()->ChangeLevel(Data->ConstructTravelURL());
+		Subsystem->OnGameInstanceInit();
 	}
+
+	UGLevelSubsystem::Get()->ChangeLevel(UGGameConfigSettings::Get()->DefaultLevelId);
 }
 
 void UGGameInstance::OnStart()
@@ -50,4 +53,18 @@ void UGGameInstance::LoadComplete(const float LoadTime, const FString& MapName)
 void UGGameInstance::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
 {
 	Super::OnWorldChanged(OldWorld, NewWorld);
+}
+
+TStatId UGGameInstance::GetStatId() const
+{
+	return GetStatID();
+}
+
+void UGGameInstance::Tick(float DeltaTime)
+{
+	const TArray<UGGameInstanceSubsystem*>& SubsystemArray = GetSubsystemArray<UGGameInstanceSubsystem>();
+	for(UGGameInstanceSubsystem* Subsystem : SubsystemArray)
+	{
+		Subsystem->OnTick(DeltaTime);
+	}
 }

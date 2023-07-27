@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Subsystems/GameInstanceSubsystem.h"
-//#include "FunctionLibrary/GLuaFunctions.h"
+#include "System/GGameInstanceSubsystem.h"
 #include "GEventSubsystem.generated.h"
 
 
@@ -67,7 +66,7 @@ FName FGEventDispatcher<Args...>::s_TypeName;
  * 
  */
 UCLASS()
-class RUNNER_API UGEventSubsystem : public UGameInstanceSubsystem
+class RUNNER_API UGEventSubsystem : public UGGameInstanceSubsystem
 {
 	GENERATED_BODY()
 

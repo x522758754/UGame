@@ -8,7 +8,9 @@ USTRUCT(BlueprintType)
 struct FGCameraParam
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (UIMin = -89.0, UIMax = 89.0))
+	float Roll;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (UIMin = -89.0, UIMax = 89.0))
 	float Pitch;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -59,8 +61,6 @@ struct FGCameraConfig
 	float MinFollowDistance = 50;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="相机跟随最大距离", Category="相机配置")
 	float MaxFollowDistance = 2000;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="相机跟随最大距离", Category="相机配置")
-	bool IsIgnore;
 };
 
 USTRUCT(BlueprintType)

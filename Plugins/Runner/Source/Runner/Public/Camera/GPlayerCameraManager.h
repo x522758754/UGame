@@ -32,6 +32,8 @@ public:
 	void ApplyCacheParam(bool bImmediately = true);
 	void ClearCacheParam();
 
+	void SetCameraParam(const FGCameraParam& Param, bool bImmediately = false);
+	void SetRoll(float Roll, bool bImmediately = false);
 	void SetPitch(float Pitch, bool bImmediately = false);
 	void SetYaw(float Yaw, bool bImmediately = false);
 	void SetDistance(float Distance, bool bImmediately = false);

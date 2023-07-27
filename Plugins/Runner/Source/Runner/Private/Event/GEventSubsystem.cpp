@@ -6,7 +6,7 @@
 TWeakObjectPtr<UGEventSubsystem> UGEventSubsystem::s_Instance;
 UGEventSubsystem* UGEventSubsystem::Get()
 {
-	if(s_Instance == nullptr)
+	if(s_Instance == nullptr && UGGameInstance::Get())
 	{
 		s_Instance = UGGameInstance::Get()->GetSubsystem<UGEventSubsystem>();
 	}

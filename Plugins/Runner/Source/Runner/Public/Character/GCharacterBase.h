@@ -11,6 +11,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EGDHitReactDirection, Direction);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AGCharacterBase*, Character);
 
+class UGCharacterInfoComponent;
 /**
  * 
  */
@@ -21,7 +22,7 @@ class RUNNER_API AGCharacterBase : public APixel2DTDCharacter, public IAbilitySy
 
 public:
 	// Sets default values for this character's properties
-	AGCharacterBase(const class FObjectInitializer& ObjectInitializer);
+	AGCharacterBase(const FObjectInitializer& ObjectInitializer);
 
 	// Set the Hit React direction in the Animation Blueprint
 	UPROPERTY(BlueprintAssignable)
@@ -89,6 +90,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void FinishDying();
+	
+public:
+	static FName InfoComponentName;
+	
+	template <class T>
+	T* GetInfoComponent() const
+	{
+		static_assert(TPointerIsConvertibleFromTo<T, UGCharacterInfoComponent>::Value, "'T' template parameter to GetInfoComponent must be derived from UGCharacterInfoComponent");
+		return Cast<T>(InfoComponent);
+	}
 
 protected:
 
@@ -119,4 +130,7 @@ protected:
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	UGCharacterInfoComponent* InfoComponent;
 };

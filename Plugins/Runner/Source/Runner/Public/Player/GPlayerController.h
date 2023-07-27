@@ -13,5 +13,10 @@ UCLASS()
 class RUNNER_API AGPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	AGPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
 };
