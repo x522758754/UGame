@@ -24,6 +24,10 @@ public:
 	// Sets default values for this character's properties
 	AGCharacterBase(const FObjectInitializer& ObjectInitializer);
 
+public:
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
+	
 	// Set the Hit React direction in the Animation Blueprint
 	UPROPERTY(BlueprintAssignable)
 	FCharacterBaseHitReactDelegate ShowHitReact;

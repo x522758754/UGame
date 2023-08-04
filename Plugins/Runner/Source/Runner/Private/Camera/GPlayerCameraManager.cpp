@@ -50,6 +50,29 @@ void AGPlayerCameraManager::Tick(float DeltaSeconds)
 	TickParam(DeltaSeconds);
 }
 
+void AGPlayerCameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+
+	const FName MemberPropertyName = (PropertyChangedEvent.MemberProperty != nullptr) ? PropertyChangedEvent.MemberProperty->GetFName() : NAME_None;
+	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(AGPlayerCameraManager, CurrentParam))
+	{
+		TargetParam = CurrentParam;
+		RefreshParam();
+	}
+
+	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(AGPlayerCameraManager, Config))
+	{
+		RefreshParam();
+	}
+
+	if (MemberPropertyName == GET_MEMBER_NAME_CHECKED(AGPlayerCameraManager, FollowParam))
+	{
+		RefreshParam();
+	}
+	
+}
+
 void AGPlayerCameraManager::SetFollow(AActor* Target, FName SocketName, float FollowSpeed)
 {
 	FollowParam.FollowActor = Target;
@@ -144,9 +167,13 @@ void AGPlayerCameraManager::ClearCacheParam()
 void AGPlayerCameraManager::SetCameraParam(const FGCameraParam& Param, bool bImmediately)
 {
 	SetRoll(Param.Roll, bImmediately);
-	SetPitch(Param.Pitch, bImmediately);
-	SetYaw(Param.Yaw, bImmediately);
-	SetDistance(Param.Distance, bImmediately);
+	SetPitch(Param.Pitch);
+	SetYaw(Param.Yaw);
+	SetDistance(Param.Distance);
+	if (bImmediately)
+	{
+		Immediately();
+	}
 }
 
 void AGPlayerCameraManager::SetRoll(float Roll, bool bImmediately)
@@ -173,6 +200,21 @@ void AGPlayerCameraManager::SetPitch(float Pitch, bool bImmediately)
 	ParamDirty = true;
 }
 
+void AGPlayerCameraManager::SetPitchDelta(float Delta, bool bImmediately)
+{
+	SetPitch(TargetParam.Pitch + Delta, bImmediately);
+}
+
+void AGPlayerCameraManager::SetYawDelta(float Delta, bool bImmediately)
+{
+	SetYaw(TargetParam.Yaw + Delta, bImmediately);
+}
+
+void AGPlayerCameraManager::SetDistanceDelta(float Delta, bool bImmediately)
+{
+	SetDistance(TargetParam.Distance + Delta, bImmediately);
+}
+
 void AGPlayerCameraManager::SetYaw(float Yaw, bool bImmediately)
 {
 	CullDeg(Yaw);
@@ -187,7 +229,7 @@ void AGPlayerCameraManager::SetYaw(float Yaw, bool bImmediately)
 
 void AGPlayerCameraManager::SetDistance(float Distance, bool bImmediately)
 {
-	TargetParam.Distance = FMath::Clamp(Distance, Config.MinZoomDistance, Config.MaxZoomDistance);
+	TargetParam.Distance = FMath::Clamp(Distance, Config.MinFollowDistance, Config.MaxFollowDistance);
 	if(bImmediately)
 	{
 		CurrentParam.Distance = TargetParam.Distance;
@@ -252,6 +294,7 @@ void AGPlayerCameraManager::TickParam(float DeltaSeconds)
 	SetDistance(TargetParam.Distance, false);
 	SetYaw(TargetParam.Yaw, false);
 	SetPitch(TargetParam.Pitch, false);
+	SetRoll(TargetParam.Roll, false);
 	
 	ParamDirty = false;
 	
@@ -275,6 +318,11 @@ void AGPlayerCameraManager::TickParam(float DeltaSeconds)
 
 void AGPlayerCameraManager::RefreshParam()
 {
+	if(!ActiveCamera.IsValid())
+	{
+		return;
+	}
+	
 	FTransform Transform;
 
 	//朝向

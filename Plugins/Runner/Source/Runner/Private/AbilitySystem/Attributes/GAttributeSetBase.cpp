@@ -142,23 +142,23 @@ void UGAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallb
 					switch (HitDirection)
 					{
 					case EGDHitReactDirection::Left:
-						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Left, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReactLeft, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Front:
-						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Front, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReactFront, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Right:
-						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Right, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReactRight, SourceCharacter);
 						break;
 					case EGDHitReactDirection::Back:
-						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Back, SourceCharacter);
+						TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReactBack, SourceCharacter);
 						break;
 					}
 				}
 				else
 				{
 					// No hit result. Default to front.
-					TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReact_Front, SourceCharacter);
+					TargetCharacter->PlayHitReact(FGGameplayTags::Get().Effect_HitReactFront, SourceCharacter);
 				}
 
 				// Show damage number for the Source player unless it was self damage
@@ -222,6 +222,14 @@ void UGAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	//在ue的网络框架里。Server会对需要同步的Actor的属性做是否已更改的检查（即用当前值和上一次同步的值做比对），只有已经更改后的属性才会从Server同步到Client，在同步量还不是特别大的时候，没有什么性能问题，不过当游戏内需要同步的Actor以及Proerty数量过多时，这里的属性更改检查就会成为Server端的瓶颈
+	
+	//todo 使用PushModel,使用DOREPLIFETIME_WITH_PARAMS_FAST或者DOREPLIFETIME_WITH_PARAMS来标记同步的Proerty
+	//使用DOREPLIFETIME_WITH_PARAMS_FAST或者DOREPLIFETIME_WITH_PARAMS来标记同步的Proerty
+	//FDoRepLifetimeParams SharedParams;
+	//SharedParams.bIsPushBased = true;
+
+	
 	DOREPLIFETIME_CONDITION_NOTIFY(UGAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UGAttributeSetBase, HealthRegenRate, COND_None, REPNOTIFY_Always);

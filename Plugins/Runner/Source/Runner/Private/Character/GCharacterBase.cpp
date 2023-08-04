@@ -3,6 +3,7 @@
 
 #include "Character/GCharacterBase.h"
 
+#include "Player/GPlayerState.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilityDefine.h"
 #include "AbilitySystem/GGameplayAbility.h"
@@ -26,6 +27,42 @@ AGCharacterBase::AGCharacterBase(const FObjectInitializer& ObjectInitializer) :
 	InfoComponent = CreateDefaultSubobject<UGCharacterInfoComponent>(InfoComponentName);
 
 	bAlwaysRelevant = true;
+}
+
+void AGCharacterBase::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if(AGPlayerState* PS = GetPlayerState<AGPlayerState>())
+	{
+		AbilitySystemComponent = Cast<UGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+
+		AttributeSetBase = PS->GetAttributeSetBase();
+
+		InitializeAttributes();
+
+		// Forcibly set the DeadTag count to 0
+		AbilitySystemComponent->SetTagMapCount(FGGameplayTags::Get().State_Dead, 0);
+
+		SetHealth(GetMaxHealth());
+		SetMana(GetMaxMana());
+		SetStamina(GetMaxStamina());
+
+		AddCharacterAbilities();
+	}
+	
+}
+
+void AGCharacterBase::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	if(AGPlayerState* PS = GetPlayerState<AGPlayerState>())
+	{
+		AbilitySystemComponent = Cast<UGAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+	}
 }
 
 UAbilitySystemComponent* AGCharacterBase::GetAbilitySystemComponent() const
@@ -112,19 +149,19 @@ void AGCharacterBase::PlayHitReact_Implementation(FGameplayTag HitDirection, AAc
 {
 	if (IsAlive())
 	{
-		if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Left )
+		if (HitDirection == FGGameplayTags::Get().Effect_HitReactLeft )
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Left);
 		}
-		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Front)
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReactFront)
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Front);
 		}
-		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Right)
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReactRight)
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Right);
 		}
-		else if (HitDirection == FGGameplayTags::Get().Effect_HitReact_Back )
+		else if (HitDirection == FGGameplayTags::Get().Effect_HitReactBack )
 		{
 			ShowHitReact.Broadcast(EGDHitReactDirection::Back);
 		}

@@ -45,6 +45,8 @@ public class Runner : ModuleRules
 				"AIModule",
 				"DeveloperSettings", 
 				"UMG",
+				"InputCore",
+				"Paper2D"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/ObjectMacros.h"
 #include "UObject/Object.h"
 #include "UObject/ScriptMacros.h"
@@ -23,6 +24,9 @@ struct FPixel2DTDAnimNotifyEventArrayElement
 
 	UPROPERTY(VisibleAnywhere, Category = NotifyEvent)
 	float NormalisedTriggerOffset = 0;
+
+	UPROPERTY(EditAnywhere, Category = NotifyEvent)
+	FGameplayTag EventTag;
 };
 
 // Proxy class for Pixel2DTopDown notifies
@@ -47,6 +51,7 @@ class PIXEL2DTD_API UPixel2DTDAnimNotify : public UObject
 			elem.bEnabled = NotifyEvent.bEnabled;
 			elem.NotifyName = NotifyEvent.NotifyName;
 			elem.NormalisedTriggerOffset = FMath::RoundHalfFromZero(NotifyEvent.NormalisedTriggerOffset*100)/100;
+			elem.EventTag = NotifyEvent.EventTag;
 			NotificationEvents.Push(elem);
 		}
 	}
@@ -68,6 +73,7 @@ class PIXEL2DTD_API UPixel2DTDAnimNotify : public UObject
 			NewNotify.bEnabled   = Notify.bEnabled;
 			NewNotify.NotifyName = Notify.NotifyName;
 			NewNotify.NormalisedTriggerOffset = FMath::RoundHalfFromZero(Notify.NormalisedTriggerOffset * 100)/100;
+			NewNotify.EventTag = Notify.EventTag;
 			NotifyArray->Push(NewNotify);
 		}
 	}

@@ -8,6 +8,7 @@
 #include "GPlayerState.generated.h"
 
 class UGAbilitySystemComponent;
+class UGAttributeSetBase;
 /**
  * 
  */
@@ -20,9 +21,14 @@ public:
 	AGPlayerState(const FObjectInitializer& ObjectInitializer);
 	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UGAttributeSetBase* GetAttributeSetBase() const;
 
+protected:
+	virtual void BeginPlay() override;
 
 protected:
 	UPROPERTY()
 	UGAbilitySystemComponent* AbilitySystemComponent;
+	UPROPERTY()
+	UGAttributeSetBase* AttributeSetBase;
 };

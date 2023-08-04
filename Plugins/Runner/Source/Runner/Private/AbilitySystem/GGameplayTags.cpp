@@ -39,12 +39,19 @@ FGameplayTag FGGameplayTags::FindTagByString(FString TagString, bool bMatchParti
 
 void FGGameplayTags::AddAllTags()
 {
-	AddTag(Effect_HitReact_Front, "Effect.HitReact.Front", "Effect Hit React Front");
-	AddTag(Effect_HitReact_Back, "Effect.HitReact.Back", "Effect Hit React Back");
-	AddTag(Effect_HitReact_Right, "Effect.HitReact.Right", "Effect Hit React Right");
-	AddTag(Effect_HitReact_Left, "Effect.HitReact.Left", "Effect Hit React Left");
+	AddTag(Effect_HitReactFront, "Effect.HitReact.Front", "Effect Hit React Front");
+	AddTag(Effect_HitReactBack, "Effect.HitReact.Back", "Effect Hit React Back");
+	AddTag(Effect_HitReactRight, "Effect.HitReact.Right", "Effect Hit React Right");
+	AddTag(Effect_HitReactLeft, "Effect.HitReact.Left", "Effect Hit React Left");
+	
 	AddTag(Effect_RemoveOnDeath, "Effect.RemoveOnDeath", "Effect Remove On Death");
+
 	AddTag(State_Dead, "State.Dead", "State Dead");
+	AddTag(State_AimDownSights, "State.AimDownSights", "State Aim Down Sights");
+	AddTag(State_AimDownSightsRemoval, "State.AimDownSights.Removal", "State Aim Down Sights Removal");
+
+	AddTag(Event_MontageEndAbility, "Event.Montage.EndAbility", "Event Montage End Ability");
+	AddTag(Event_MontageSpawnProjectile, "Event.Montage.SpawnProjectile", "Event Montage Spawn Projectile");
 }
 
 void FGGameplayTags::AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, const ANSICHAR* TagComment)

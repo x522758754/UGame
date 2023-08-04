@@ -2,6 +2,9 @@
  
 
 #include "Pixel2DTDAnimInstance.h"
+
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Pixel2DTDAnimInstanceProxy.h"
 
 #include "Pixel2DTDAnimNode_Base.h"
@@ -201,6 +204,22 @@ void UPixel2DTDAnimInstance::TriggerSingleAnimNotify(const FAnimNotifyEvent* Ani
 					// Actor has event, but with different parameters. Print warning
 					//UE_LOG(LogSpriteAnimEditor, Warning, TEXT("Pixel 2DAnim notifier named %s, but the parameter number does not match or not of the correct type"), *FuncName);
 				}
+			}
+
+			 if(FPixel2DTDAnimNotifyEvent* NotifyEvent = (FPixel2DTDAnimNotifyEvent*)AnimNotifyEvent)
+			 {
+			 	if(NotifyEvent->EventTag.IsValid())
+			 	{
+			 		if(AActor* Owner = GetOwningActor())
+			 		{
+			 			UAbilitySystemComponent* AbilitySystemComponent = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Owner);
+			 			if (AbilitySystemComponent != nullptr)
+			 			{
+			 				FScopedPredictionWindow NewScopedWindow(AbilitySystemComponent, true);
+			 				AbilitySystemComponent->HandleGameplayEvent(NotifyEvent->EventTag, new FGameplayEventData());
+			 			}
+			 		}
+			 	}
 			}
 		}
 	}

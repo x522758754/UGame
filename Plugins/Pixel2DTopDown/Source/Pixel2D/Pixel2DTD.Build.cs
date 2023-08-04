@@ -21,7 +21,9 @@ public class Pixel2DTD : ModuleRules
                 "RHI",
                 "SlateCore",
                 "Slate",
-                "Paper2D"
+                "Paper2D",
+                "GameplayAbilities",
+                "GameplayTags",
             }
         );
 

@@ -67,21 +67,16 @@ void UGLevelSubsystem::OnLevelLoaded()
 	if(UGConfigData::Get()->LevelConfigs.Contains(OpenLevelId))
 	{
 		const FGLevelConfig& Cfg = UGConfigData::Get()->LevelConfigs[OpenLevelId];
-		AGHeroCharacter *Hero = UGHeroFunctions::SpawnHero(UGGameConfigSettings::Get()->DefaultHeroId, Cfg.BornTransform);
+		/*AGHeroCharacter *Hero = UGHeroFunctions::SpawnHero(UGGameConfigSettings::Get()->DefaultHeroId, Cfg.BornTransform);
 		if(Hero)
 		{
 			if(AGPlayerController* PlayerController = UGCommonFunctions::GetPlayerController())
 			{
-				 Hero->PossessedBy(PlayerController);
+				PlayerController->Possess(Hero);
+				//PlayerController->SetPawn(Hero);
 			}
 			//设置相机
-			if(AGPlayerCameraManager* PlayerCameraManager = UGCommonFunctions::GetPlayerCameraManager())
-			{
-				PlayerCameraManager->SetFollow(Hero);
-				PlayerCameraManager->SetConfig(UGGameConfigSettings::Get()->DefaultCameraId);
-				PlayerCameraManager->SetCameraParam(UGGameConfigSettings::Get()->DefaultCameraParam, true);
-			}
-		}
+		}*/
 	}
 }
 

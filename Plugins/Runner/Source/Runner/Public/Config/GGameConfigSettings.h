@@ -45,4 +45,7 @@ public:
 
 	UPROPERTY(config, noclear, EditAnywhere)
 	int32 DefaultHeroId = 1;
+
+	UPROPERTY(config, EditAnywhere, Category = "Input", meta = (ClampMin = 0.f))
+	float InputClickMaxDistance = 2;
 };

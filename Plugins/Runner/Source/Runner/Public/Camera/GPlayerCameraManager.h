@@ -20,6 +20,10 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
+
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
 public:
 	void SetFollow(AActor* Target, FName SocketName = NAME_None, float FollowSpeed = -1.f);
 	AActor* GetFollow();
@@ -35,8 +39,11 @@ public:
 	void SetCameraParam(const FGCameraParam& Param, bool bImmediately = false);
 	void SetRoll(float Roll, bool bImmediately = false);
 	void SetPitch(float Pitch, bool bImmediately = false);
+	void SetPitchDelta(float Delta, bool bImmediately = false);
 	void SetYaw(float Yaw, bool bImmediately = false);
+	void SetYawDelta(float Delta, bool bImmediately = false);
 	void SetDistance(float Distance, bool bImmediately = false);
+	void SetDistanceDelta(float Delta, bool bImmediately = false);
 	float GetPitch(bool bImmediately = true);
 	float GetYaw(bool bImmediately = true);
 	float GetDistance(bool bImmediately = true);

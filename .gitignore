@@ -214,7 +214,6 @@ Engine/Binaries/Android/packageInfo.txt
 enc_temp_folder/
 
 # Ignore content folders
-Content/
 
 # Ignore DDC
 /Engine/DerivedDataCache/**

@@ -13,15 +13,23 @@ public:
 
 	static void InitializeNativeTags();
 
+	//获取GameplayTag引用
 	static FGameplayTag FindTagByString(FString TagString, bool bMatchPartialString = false);
 public:
-	FGameplayTag Effect_HitReact_Front;
-	FGameplayTag Effect_HitReact_Back;
-	FGameplayTag Effect_HitReact_Right;
-	FGameplayTag Effect_HitReact_Left;
-
-	FGameplayTag State_Dead;
+	FGameplayTag Effect_HitReactFront;
+	FGameplayTag Effect_HitReactBack;
+	FGameplayTag Effect_HitReactRight;
+	FGameplayTag Effect_HitReactLeft;
+	
 	FGameplayTag Effect_RemoveOnDeath;
+	
+	FGameplayTag State_Dead;
+	FGameplayTag State_AimDownSights;
+	FGameplayTag State_AimDownSightsRemoval;
+	
+
+	FGameplayTag Event_MontageEndAbility;
+	FGameplayTag Event_MontageSpawnProjectile;
 protected:
 	void AddAllTags();
 	void AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, const ANSICHAR* TagComment);

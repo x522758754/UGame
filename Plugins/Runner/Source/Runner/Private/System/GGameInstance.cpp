@@ -31,13 +31,13 @@ void UGGameInstance::Init()
 	{
 		Subsystem->OnGameInstanceInit();
 	}
-
-	UGLevelSubsystem::Get()->ChangeLevel(UGGameConfigSettings::Get()->DefaultLevelId);
 }
 
 void UGGameInstance::OnStart()
 {
 	Super::OnStart();
+
+	//UGLevelSubsystem::Get()->ChangeLevel(UGGameConfigSettings::Get()->DefaultLevelId);
 }
 
 void UGGameInstance::Shutdown()
@@ -48,6 +48,8 @@ void UGGameInstance::Shutdown()
 void UGGameInstance::LoadComplete(const float LoadTime, const FString& MapName)
 {
 	Super::LoadComplete(LoadTime, MapName);
+
+	//GetWorld()->CreatePhysicsScene();
 }
 
 void UGGameInstance::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
