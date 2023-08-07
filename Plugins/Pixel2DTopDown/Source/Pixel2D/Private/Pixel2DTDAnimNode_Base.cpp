@@ -23,6 +23,7 @@ UPixel2DTDAnimBlueprintGeneratedClass* FPixel2DTDAnimationBaseContext::GetAnimCl
 void FPixel2DTDPoseContext::Initialize(FPixel2DTDAnimInstanceProxy* InAnimInstanceProxy)
 {
 	Flipbook = NULL;
+	bLooping = true;
 }
 
 

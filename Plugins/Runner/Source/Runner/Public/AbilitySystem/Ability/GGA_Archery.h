@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Character/CharacterDef.h"
 #include "AbilitySystem/GGameplayAbility.h"
-// #include "Characters/Abilities/AbilityTasks/GDAT_PlayMontageAndWaitForEvent.h"
-// #include "Characters/GDProjectile.h"
 #include "GGA_Archery.generated.h"
 
-class UPaperFlipbook;
+enum class EGAttackType : uint8;
 class AGProjectile;
 /**
  * 
@@ -22,7 +21,7 @@ public:
 	UGGA_Archery();
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	UPaperFlipbook* FireFlipbook;
+	EGAttackType AttackType = EGAttackType::RangedAttack;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<AGProjectile> ProjectileClass;

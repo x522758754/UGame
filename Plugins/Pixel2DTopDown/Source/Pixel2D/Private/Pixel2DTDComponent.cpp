@@ -99,11 +99,14 @@ void UPixel2DTDComponent::TickAnimation(float DeltaTime, bool bNeedsValidRootMot
 			// Tick the animation
 			AnimScriptInstance->UpdateAnimation(DeltaTime * GlobalAnimRateScale, bNeedsValidRootMotion);
 			UPaperFlipbook * CurrentFlipbook = NULL;
-			UPaperFlipbook * CurrentFlipbook1 = EvaluateAnimation(this, AnimScriptInstance, CurrentFlipbook);
+			bool isLooping;
+			UPaperFlipbook * CurrentFlipbook1 = EvaluateAnimation(this, AnimScriptInstance, CurrentFlipbook, isLooping);
 
 			if (CurrentFlipbook1 != SourceFlipbook)
 			{
 				SetFlipbook(CurrentFlipbook1);
+				SetLooping(isLooping);
+				Play();
 			}
 
 			// Dispatch queued events
@@ -124,7 +127,7 @@ bool UPixel2DTDComponent::HandleExistingParallelEvaluationTask(bool bBlockOnTask
 	return false;
 }
 
-UPaperFlipbook * UPixel2DTDComponent::EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose) const
+UPaperFlipbook * UPixel2DTDComponent::EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose, bool& bLooping) const
 {
-	return InAnimInstance->ParallelEvaluateAnimation(InSkeletalMesh, OutPose);
+	return InAnimInstance->ParallelEvaluateAnimation(InSkeletalMesh, OutPose, bLooping);
 }

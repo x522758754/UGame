@@ -4,6 +4,11 @@
 #include "Pixel2DTDAnimNode_AssetSprite.h"
 #include "Pixel2DTDAnimNotifyQueue.h"
 
+FPixel2DTDAnimNode_AssetSprite::FPixel2DTDAnimNode_AssetSprite()
+{
+	bLooping = true;
+}
+
 void FPixel2DTDAnimNode_AssetSprite::Initialize_AnyThread(const FPixel2DTDAnimationInitializeContext & Context)
 {
 	ElapsedTime = 0;
@@ -41,6 +46,7 @@ void FPixel2DTDAnimNode_AssetSprite::UpdateAssetPlayer(const FPixel2DTDAnimation
 void FPixel2DTDAnimNode_AssetSprite::Evaluate_AnyThread(FPixel2DTDPoseContext & Output)
 {
 	Output.Flipbook = AssetFlipbook;
+	Output.bLooping = bLooping;
 
 	if (RelativeTimeInFlipbook >= GetCurrentAssetLength())
 	{

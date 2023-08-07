@@ -78,7 +78,7 @@ public:
 	//~ End UActorComponent Interface.
 
 	/** Evaluate Anim System **/
-	UPaperFlipbook* EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose) const;
+	UPaperFlipbook* EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose, bool& bLooping) const;
 	bool NeedToSpawnAnimScriptInstance() const;
 
 };

@@ -4,26 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Character/GCharacterBase.h"
+#include "Character/CharacterDef.h"
 #include "GHeroCharacter.generated.h"
 
-UENUM(BlueprintType)
-enum class EGMoveDirection :uint8
-{
-	UP,
-	Down,
-	Right,
-	Left,
-};
-
-UENUM(BlueprintType)
-enum class EGAttackType:uint8
-{
-	MeleeAttack UMETA(DisplayName = "Melee Attack"),
-	RangedAttack UMETA(DisplayName = "Ranged Attack"),
-	GrenadeAttack UMETA(DisplayName = "Grenade Attack"),
-	MagicAttack UMETA(DisplayName = "Magic Attack"),
-	None UMETA(DisplayName = "None"),
-};
 
 /**
  * 

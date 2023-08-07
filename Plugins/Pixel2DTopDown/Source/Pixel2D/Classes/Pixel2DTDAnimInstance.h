@@ -137,7 +137,7 @@ class PIXEL2DTD_API UPixel2DTDAnimInstance : public UObject
 		bool ParallelCanEvaluate(const UPixel2DTDComponent* InSkeletalMesh) const;
 
 		/** Perform evaluation. Can be called from worker threads. */
-		UPaperFlipbook* ParallelEvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPaperFlipbook * Flipbook);
+		UPaperFlipbook* ParallelEvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPaperFlipbook * Flipbook, bool& bLooping);
 
 		void UninitializeAnimation();
 
@@ -153,6 +153,10 @@ class PIXEL2DTD_API UPixel2DTDAnimInstance : public UObject
 		/** Trigger AnimNotifies **/
 		void TriggerAnimNotifies(float DeltaSeconds);
 		void TriggerSingleAnimNotify(const FAnimNotifyEvent* AnimNotifyEvent);
+
+	protected:
+		/** Return whether this AnimNotifyState should be triggered */
+		virtual bool ShouldTriggerAnimNotifyState(const UAnimNotifyState* AnimNotifyState) const;
 
 	protected:
 

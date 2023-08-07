@@ -21,10 +21,15 @@ struct PIXEL2DTD_API FPixel2DTDAnimNode_AssetSprite : public FPixel2DTDAnimNode_
 	const static int32 MaxNotifySlots = 20;
 
 public:
-	UPROPERTY()
+	FPixel2DTDAnimNode_AssetSprite();
+	
+	UPROPERTY(EditAnywhere)
 	UPaperFlipbook * AssetFlipbook;
+	
+	UPROPERTY(EditAnywhere)
+	bool bLooping;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TArray<FPixel2DTDAnimNotifyEvent> NotifyEvents;
 
 	float ElapsedTime;

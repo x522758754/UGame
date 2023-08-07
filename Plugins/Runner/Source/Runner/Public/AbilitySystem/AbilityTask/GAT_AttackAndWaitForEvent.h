@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
-#include "GAT_PlayFlipbookAndWaitForEvent.generated.h"
+#include "Character/CharacterDef.h"
+#include "GAT_AttackAndWaitForEvent.generated.h"
 
-class UPaperFlipbook;
 class UGAbilitySystemComponent;
 
 /** Delegate type used, EventTag and Payload may be empty if it came from the montage callbacks */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGPlayFlipbookAndWaitForEventDelegate, FGameplayTag, EventTag, FGameplayEventData, EventData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGAttackAndWaitForEventDelegate, FGameplayTag, EventTag, FGameplayEventData, EventData);
 
 /**
  * This task combines PlayMontageAndWait and WaitForEvent into one task, so you can wait for multiple types of activations such as from a melee combo
@@ -19,13 +19,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FGPlayFlipbookAndWaitForEventDelega
  * It is expected that each game will have a set of game-specific tasks to do what they want
  */
 UCLASS()
-class UGAT_PlayFlipbookAndWaitForEvent : public UAbilityTask
+class UGAT_AttackAndWaitForEvent : public UAbilityTask
 {
 	GENERATED_BODY()
 	
 public:
 	// Constructor and overrides
-	UGAT_PlayFlipbookAndWaitForEvent(const FObjectInitializer& ObjectInitializer);
+	UGAT_AttackAndWaitForEvent(const FObjectInitializer& ObjectInitializer);
 
 	/**
 	 * Play a montage and wait for it end. If a gameplay event happens that matches EventTags (or EventTags is empty), the EventReceived delegate will fire with a tag and event data.
@@ -41,15 +41,7 @@ public:
 	 * @param AnimRootMotionTranslationScale Change to modify size of root motion or set to 0 to block it entirely
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (HidePin = "OwningAbility", DefaultToSelf = "OwningAbility", BlueprintInternalUseOnly = "TRUE"))
-	static UGAT_PlayFlipbookAndWaitForEvent* PlayFlipbookAndWaitForEvent(
-			UGameplayAbility* OwningAbility,
-			FName TaskInstanceName,
-			UPaperFlipbook* FilpbookToPlay,
-			FGameplayTagContainer EventTags,
-			float Rate = 1.f,
-			FName StartSection = NAME_None,
-			bool bStopWhenAbilityEnds = true,
-			float AnimRootMotionTranslationScale = 1.f);
+	static UGAT_AttackAndWaitForEvent* AttackAndWaitForEvent(UGameplayAbility* OwningAbility, EGAttackType Type, FName TaskInstanceName, FGameplayTagContainer EventTags);
 
 	/**
 	* The Blueprint node for this task, PlayMontageAndWaitForEvent, has some black magic from the plugin that automagically calls Activate()
@@ -59,56 +51,36 @@ public:
 
 	
 	virtual void ExternalCancel() override;
-	virtual FString GetDebugString() const override;
 	virtual void OnDestroy(bool AbilityEnded) override;
+
+	UFUNCTION()
+	void OnFinishedPlaying();
+
+	bool StopPlaying();
 
 	/** The montage completely finished playing */
 	UPROPERTY(BlueprintAssignable)
-	FGPlayFlipbookAndWaitForEventDelegate OnCompleted;
-
-	/** The montage started blending out */
-	UPROPERTY(BlueprintAssignable)
-	FGPlayFlipbookAndWaitForEventDelegate OnBlendOut;
+	FGAttackAndWaitForEventDelegate OnCompleted;
 
 	/** The montage was interrupted */
 	UPROPERTY(BlueprintAssignable)
-	FGPlayFlipbookAndWaitForEventDelegate OnInterrupted;
+	FGAttackAndWaitForEventDelegate OnInterrupted;
 
 	/** The ability task was explicitly cancelled by another ability */
 	UPROPERTY(BlueprintAssignable)
-	FGPlayFlipbookAndWaitForEventDelegate OnCancelled;
+	FGAttackAndWaitForEventDelegate OnCancelled;
 
 	/** One of the triggering gameplay events happened */
 	UPROPERTY(BlueprintAssignable)
-	FGPlayFlipbookAndWaitForEventDelegate EventReceived;
+	FGAttackAndWaitForEventDelegate EventReceived;
 
 private:
-	/** Montage that is playing */
-	UPROPERTY()
-	UPaperFlipbook* FlipbookToPlay;
-
 	/** List of tags to match against gameplay events */
 	UPROPERTY()
 	FGameplayTagContainer EventTags;
 
-	/** Playback rate */
 	UPROPERTY()
-	float Rate;
-
-	/** Section to start montage from */
-	UPROPERTY()
-	FName StartSection;
-
-	/** Modifies how root motion movement to apply */
-	UPROPERTY()
-	float AnimRootMotionTranslationScale;
-
-	/** Rather montage should be aborted if ability ends */
-	UPROPERTY()
-	bool bStopWhenAbilityEnds;
-
-	/** Checks if the ability is playing a montage and stops that montage, returns true if a montage was stopped, false if not. */
-	bool StopPlayingFlipbook();
+	EGAttackType AttackType;
 
 	//void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
 	void OnAbilityCancelled();

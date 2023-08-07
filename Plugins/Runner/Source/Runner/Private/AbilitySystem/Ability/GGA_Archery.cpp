@@ -3,13 +3,14 @@
 
 #include "AbilitySystem/Ability/GGA_Archery.h"
 
-#include "GAT_PlayFlipbookAndWaitForEvent.h"
+#include "GAT_AttackAndWaitForEvent.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTask/GAT_PlayMontageAndWaitForEvent.h"
 #include "Character/GCharacterBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Actor/GProjectile.h"
+
 
 UGGA_Archery::UGGA_Archery()
 {
@@ -23,22 +24,14 @@ void UGGA_Archery::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 	
-	if(FireFlipbook)
-	{
-		// Play fire montage and wait for event telling us to spawn the projectile
-		UGAT_PlayFlipbookAndWaitForEvent* Task = UGAT_PlayFlipbookAndWaitForEvent::PlayFlipbookAndWaitForEvent(this, NAME_None, FireFlipbook, FGameplayTagContainer(), 1.0f, NAME_None, false, 1.0f);
-		Task->OnBlendOut.AddDynamic(this, &UGGA_Archery::OnCompleted);
-		Task->OnCompleted.AddDynamic(this, &UGGA_Archery::OnCompleted);
-		Task->OnInterrupted.AddDynamic(this, &UGGA_Archery::OnCancelled);
-		Task->OnCancelled.AddDynamic(this, &UGGA_Archery::OnCancelled);
-		Task->EventReceived.AddDynamic(this, &UGGA_Archery::EventReceived);
-		// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
-		Task->ReadyForActivation();
-	}
-	else
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-	}
+	// Play fire montage and wait for event telling us to spawn the projectile
+	UGAT_AttackAndWaitForEvent* Task = UGAT_AttackAndWaitForEvent::AttackAndWaitForEvent(this, EGAttackType::RangedAttack, NAME_None, FGameplayTagContainer());
+	Task->OnCompleted.AddDynamic(this, &UGGA_Archery::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGGA_Archery::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGGA_Archery::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UGGA_Archery::EventReceived);
+	// ReadyForActivation() is how you activate the AbilityTask in C++. Blueprint has magic from K2Node_LatentGameplayTaskCall that will automatically call ReadyForActivation().
+	Task->ReadyForActivation();
 }
 
 void UGGA_Archery::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

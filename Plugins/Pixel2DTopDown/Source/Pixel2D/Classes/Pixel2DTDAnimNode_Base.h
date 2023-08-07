@@ -65,6 +65,7 @@ struct FPixel2DTDPoseContext : public FPixel2DTDAnimationBaseContext
 {
 public:
 	UPaperFlipbook *Flipbook;
+	bool bLooping;
 
 public:
 	// This constructor allocates a new uninitialized pose for the specified anim instance

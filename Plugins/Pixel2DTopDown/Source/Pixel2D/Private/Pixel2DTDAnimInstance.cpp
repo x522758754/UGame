@@ -8,6 +8,7 @@
 #include "Pixel2DTDAnimInstanceProxy.h"
 
 #include "Pixel2DTDAnimNode_Base.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 
 UPixel2DTDAnimInstance::UPixel2DTDAnimInstance(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -129,7 +130,7 @@ bool UPixel2DTDAnimInstance::ParallelCanEvaluate(const UPixel2DTDComponent* InSk
 	return true;
 }
 
-UPaperFlipbook* UPixel2DTDAnimInstance::ParallelEvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPaperFlipbook * Flipbook)
+UPaperFlipbook* UPixel2DTDAnimInstance::ParallelEvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPaperFlipbook * Flipbook, bool& bLooping)
 {
 	FPixel2DTDAnimInstanceProxy& Proxy = GetProxyOnAnyThread<FPixel2DTDAnimInstanceProxy>();
 
@@ -140,7 +141,8 @@ UPaperFlipbook* UPixel2DTDAnimInstance::ParallelEvaluateAnimation(const UPixel2D
 	// Run the anim blueprint
 	Proxy.EvaluateAnimation(EvaluationContext);
 	Flipbook = EvaluationContext.Flipbook;
-
+	bLooping = EvaluationContext.bLooping;
+	
 	return Flipbook;
 }
 
@@ -223,8 +225,27 @@ void UPixel2DTDAnimInstance::TriggerSingleAnimNotify(const FAnimNotifyEvent* Ani
 			}
 		}
 	}
+	else if(AnimNotifyEvent->NotifyStateClass != NULL)
+	{
+		//todo
+		UE_LOG(LogTemp, Display, TEXT("UPixel2DTDAnimInstance::TriggerSingleAnimNotify %s"), *AnimNotifyEvent->NotifyStateClass->GetName());
+		if (ShouldTriggerAnimNotifyState(AnimNotifyEvent->NotifyStateClass))
+		{
+			//
+			//AnimNotifyEvent->NotifyStateClass->NotifyEnd(SkelMeshComp, NotifyMontage);
+		}
+	}
 }
- 
+
+bool UPixel2DTDAnimInstance::ShouldTriggerAnimNotifyState(const UAnimNotifyState* AnimNotifyState) const
+{
+	if (ensureMsgf(AnimNotifyState != nullptr, TEXT("UAnimInstance::ShouldTriggerAnimNotifyState: AnimNotifyState is null on AnimInstance %s. "), *GetNameSafe(this)))
+	{
+		return true;
+	}
+	return false;
+}
+
 float UPixel2DTDAnimInstance::GetInstanceCurrentStateElapsedTime(int32 MachineIndex)
 {
 	return GetProxyOnAnyThread<FPixel2DTDAnimInstanceProxy>().GetInstanceCurrentStateElapsedTime(MachineIndex);
