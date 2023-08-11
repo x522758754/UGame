@@ -22,6 +22,9 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 
+	void Move(FVector Direction, float Scale = 1.f);
+	void StopMove();
+
 protected:
 	void BindAscInput();
 

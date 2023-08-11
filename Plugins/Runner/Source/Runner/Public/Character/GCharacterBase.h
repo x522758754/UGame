@@ -112,6 +112,7 @@ protected:
 	virtual void AddCharacterAbilities();
 	
 	virtual void InitializeAttributes();
+	virtual void AddStartupEffects();
 	
 	virtual void SetHealth(float Health);
 	virtual void SetMana(float Mana);
@@ -134,6 +135,10 @@ protected:
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+
+	// These effects are only applied one time on startup
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	UGCharacterInfoComponent* InfoComponent;

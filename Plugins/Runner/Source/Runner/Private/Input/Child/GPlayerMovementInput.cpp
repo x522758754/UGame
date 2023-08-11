@@ -5,8 +5,7 @@
 
 #include "GPlayerCameraManager.h"
 #include "System/GCommonFunctions.h"
-#include "Event/GEventBasic.h"
-#include "GameFramework/Character.h"
+#include "Character/Hero/GHeroCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Player/GPlayerController.h"
@@ -45,18 +44,18 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 	{
 		return;
 	}
+	AGHeroCharacter* Character = PC->GetPawn<AGHeroCharacter>();
+	if (!Character)
+	{
+		return;
+	}
+	if(Character->GetMovementComponent()->IsFalling())
+	{
+		return;
+	}
 	FVector2D joyOffset = PC->GetVirtualJoyOffset();
 	if (MoveDirection || FMath::Abs(joyOffset.X) > 0.01f || FMath::Abs(joyOffset.Y) > 0.01f)
 	{
-		ACharacter* Character = PC->GetPawn<ACharacter>();
-		if (!Character)
-		{
-			return;
-		}
-		if(Character->GetMovementComponent()->IsFalling())
-		{
-			return;
-		}
 		AGPlayerCameraManager* CameraManager = UGCommonFunctions::GetPlayerCameraManager();
 		if (!CameraManager)
 		{
@@ -92,9 +91,13 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 		FVector JoyMoveDir = joyOffset.X * Right + joyOffset.Y * Foward;
 		JoyMoveDir.Normalize();
 		Direction += JoyMoveDir;
-		Character->AddMovementInput(Direction, 1);
+		Character->Move(Direction);
 
 		//UGEventBasicFunctions::Dispatch(EGEventType::PlayerMovement, Direction);
+	}
+	else
+	{
+		Character->StopMove();
 	}
 }
 

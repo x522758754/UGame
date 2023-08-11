@@ -28,6 +28,7 @@ void AGProjectile::OnOverlap(AActor* OtherActor)
 	
 	if(!HasAuthority())
 	{
+		Destroy();
 		return;
 	}
 
@@ -46,6 +47,7 @@ void AGProjectile::OnOverlap(AActor* OtherActor)
 						EffectContext.AddHitResult(HitResult);
 						
 						Character->GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*Spec);
+						Destroy();
 						break;
 					}
 				}

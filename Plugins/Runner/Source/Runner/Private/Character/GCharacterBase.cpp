@@ -348,12 +348,37 @@ void AGCharacterBase::InitializeAttributes()
 	}
 }
 
+void AGCharacterBase::AddStartupEffects()
+{
+	if(!HasAuthority() || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bStartupEffectsApplied)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
+	{
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent.Get());
+		}
+	}
+
+	AbilitySystemComponent->bStartupEffectsApplied = true;
+}
+
 void AGCharacterBase::SetHealth(float Health)
 {
 	if (AttributeSetBase.IsValid())
 	{
 		AttributeSetBase->SetHealth(Health);
 	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
 }
 
 void AGCharacterBase::SetMana(float Mana)

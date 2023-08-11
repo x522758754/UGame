@@ -3,6 +3,7 @@
 
 #include "AbilitySystem/Ability/GGA_Archery.h"
 
+#include "GAssetManager.h"
 #include "GAT_AttackAndWaitForEvent.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
@@ -63,30 +64,43 @@ void UGGA_Archery::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
+		TSubclassOf<AGProjectile> ProjectileClass = UGAssetManager::Get()->LoadSubclass(ProjectileClassPath);
+		if(ProjectileClass == nullptr)
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			return;
+		}
 
-		// FVector Start = Hero->GetGunComponent()->GetSocketLocation(FName("Muzzle"));
-		// FVector End = Hero->GetCameraBoom()->GetComponentLocation() + Hero->GetFollowCamera()->GetForwardVector() * Range;
 		FVector Start = Hero->GetActorLocation();
 		FVector End = Hero->GetActorLocation() + Hero->GetActorForwardVector() * Range;
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
-
-		FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffect, GetAbilityLevel());
 		
-		// Pass the damage to the Damage Execution Calculation through a SetByCaller value on the GameplayEffectSpec
-		//DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), Damage);
-
-		//FTransform MuzzleTransform = Hero->GetGunComponent()->GetSocketTransform(FName("Muzzle"));
-		FTransform MuzzleTransform = Hero->GetActorTransform();
-		MuzzleTransform.SetRotation(Rotation.Quaternion());
-		MuzzleTransform.SetScale3D(FVector(1.0f));
+		FTransform SpawnTransform = Hero->GetActorTransform();
+		SpawnTransform.SetRotation(Rotation.Quaternion());
+		SpawnTransform.SetScale3D(FVector(1.0f));
 
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		AGProjectile* Projectile = GetWorld()->SpawnActorDeferred<AGProjectile>(ProjectileClass, MuzzleTransform, GetOwningActorFromActorInfo(),
+		AGProjectile* Projectile = GetWorld()->SpawnActorDeferred<AGProjectile>(ProjectileClass, SpawnTransform, GetOwningActorFromActorInfo(),
 			Hero, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
-		Projectile->Range = Range;
-		Projectile->FinishSpawning(MuzzleTransform);
+		if(Projectile)
+		{
+			if(TSubclassOf<UGameplayEffect> DamageGameplayEffectClass = UGAssetManager::Get()->LoadSubclass(DamageGameplayEffectClassPath))
+			{
+				FGameplayEffectSpecHandle DamageEffectSpecHandle = MakeOutgoingGameplayEffectSpec(DamageGameplayEffectClass, GetAbilityLevel());
+		
+				// Pass the damage to the Damage Execution Calculation through a SetByCaller value on the GameplayEffectSpec
+				if(DamageEffectSpecHandle.IsValid())
+				{
+					DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), Damage);
+				}
+
+				Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;
+			}
+			
+			Projectile->Range = Range;
+			Projectile->FinishSpawning(SpawnTransform);
+		}
 	}
 }

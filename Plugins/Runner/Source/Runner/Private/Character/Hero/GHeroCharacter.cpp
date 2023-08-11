@@ -3,6 +3,7 @@
 
 #include "Character/Hero/GHeroCharacter.h"
 
+#include "Pixel2DTDComponent.h"
 #include "Player/GPlayerState.h"
 #include "AbilitySystem/GAbilityDefine.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
@@ -23,6 +24,49 @@ void AGHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void AGHeroCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+}
+
+void AGHeroCharacter::Move(FVector Direction, float Scale)
+{
+	if(Direction.IsNearlyZero())
+	{
+		StopMove();
+		return;
+	}
+	
+	AddMovementInput(Direction, Scale);
+	Direction.Normalize();
+
+	if(FMath::Abs(Direction.X) > FMath::Abs(Direction.Y))
+	{
+		if(Direction.X > 0)
+		{
+			MoveDirection = EGMoveDirection::Right;
+			//GetSprite()->SetWorldRotation(FRotator(0.f, 0.f, -90.f));
+		}
+		else if(Direction.X < 0)
+		{
+			MoveDirection = EGMoveDirection::Left;
+			//GetSprite()->SetWorldRotation(FRotator(0.f, 180.f, 90.f));
+		}
+	}
+	else
+	{
+		if(Direction.Y > 0)
+		{
+			MoveDirection = EGMoveDirection::Down;
+		}
+		else if(Direction.Y < 0)
+		{
+			MoveDirection = EGMoveDirection::UP;
+		}
+	}
+	isMoving = true;
+}
+
+void AGHeroCharacter::StopMove()
+{
+	isMoving = false;
 }
 
 void AGHeroCharacter::BindAscInput()

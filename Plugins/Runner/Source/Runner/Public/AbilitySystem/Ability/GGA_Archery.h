@@ -10,7 +10,7 @@
 enum class EGAttackType : uint8;
 class AGProjectile;
 /**
- * 
+ * 射箭，发出弓箭
  */
 UCLASS()
 class UGGA_Archery : public UGGameplayAbility
@@ -24,10 +24,10 @@ public:
 	EGAttackType AttackType = EGAttackType::RangedAttack;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<AGProjectile> ProjectileClass;
+	TSoftClassPtr<AGProjectile> ProjectileClassPath;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TSubclassOf<UGameplayEffect> DamageGameplayEffect;
+	TSoftClassPtr<UGameplayEffect> DamageGameplayEffectClassPath;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FGameplayTag TagEvent_MontageSpawnProjectile;
