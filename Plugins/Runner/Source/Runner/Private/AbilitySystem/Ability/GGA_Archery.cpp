@@ -5,10 +5,10 @@
 
 #include "GAssetManager.h"
 #include "GAT_AttackAndWaitForEvent.h"
+#include "Character/Hero/GHeroCharacter.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTask/GAT_PlayMontageAndWaitForEvent.h"
-#include "Character/GCharacterBase.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Actor/GProjectile.h"
 
@@ -59,7 +59,7 @@ void UGGA_Archery::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 	// Predicting projectiles is an advanced topic not covered in this example.
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority && EventTag == TagEvent_MontageSpawnProjectile)
 	{
-		AGCharacterBase* Hero = Cast<AGCharacterBase>(GetAvatarActorFromActorInfo());
+		AGHeroCharacter* Hero = Cast<AGHeroCharacter>(GetAvatarActorFromActorInfo());
 		if (!Hero)
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
@@ -72,7 +72,7 @@ void UGGA_Archery::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 		}
 
 		FVector Start = Hero->GetActorLocation();
-		FVector End = Hero->GetActorLocation() + Hero->GetActorForwardVector() * Range;
+		FVector End = Hero->GetActorLocation() + Hero->GetMoveDirection() * Range;
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 		
 		FTransform SpawnTransform = Hero->GetActorTransform();

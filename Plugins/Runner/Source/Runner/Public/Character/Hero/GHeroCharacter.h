@@ -24,6 +24,8 @@ public:
 
 	void Move(FVector Direction, float Scale = 1.f);
 	void StopMove();
+	FVector GetMoveDirection();
+	virtual void OnMoveUpdate();
 
 protected:
 	void BindAscInput();

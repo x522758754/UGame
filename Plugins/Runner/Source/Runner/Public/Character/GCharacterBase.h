@@ -59,6 +59,8 @@ public:
 	/**
 	* Getters for attributes from GDAttributeSetBase
 	**/
+
+	
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetCharacterLevel() const;
