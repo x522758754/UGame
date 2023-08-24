@@ -2,6 +2,8 @@
 
 
 #include "Character/GCharacterInfoComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Net/Core/PushModel/PushModel.h"
 
 // Sets default values for this component's properties
 UGCharacterInfoComponent::UGCharacterInfoComponent()
@@ -20,7 +22,24 @@ void UGCharacterInfoComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+	RegisterToSubsystem();
+}
+
+void UGCharacterInfoComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+
+	UnregisterFromSubsystem();
+}
+
+void UGCharacterInfoComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	FDoRepLifetimeParams RepLifetimeParams;
+	RepLifetimeParams.bIsPushBased = true;
+	RepLifetimeParams.Condition = COND_InitialOnly;
+	DOREPLIFETIME_WITH_PARAMS(UGCharacterInfoComponent, ConfigId, RepLifetimeParams);
 }
 
 
@@ -30,5 +49,44 @@ void UGCharacterInfoComponent::TickComponent(float DeltaTime, ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UGCharacterInfoComponent::SetConfigId(int32 InConfigId)
+{
+	ConfigId = InConfigId;
+}
+
+void UGCharacterInfoComponent::SetGuid(int64 InGuid)
+{
+	Guid = InGuid;
+	RegisterToSubsystem();
+}
+
+int64 UGCharacterInfoComponent::GetGuid()
+{
+	return Guid;
+}
+
+int32 UGCharacterInfoComponent::GetConfigId()
+{
+	return ConfigId;
+}
+
+void UGCharacterInfoComponent::RegisterToSubsystem()
+{
+}
+
+void UGCharacterInfoComponent::UnregisterFromSubsystem()
+{
+}
+
+void UGCharacterInfoComponent::OnRep_ConfigId()
+{
+	 
+}
+
+void UGCharacterInfoComponent::OnRep_Guid()
+{
+	RegisterToSubsystem();
 }
 

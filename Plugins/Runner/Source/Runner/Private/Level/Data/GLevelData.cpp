@@ -6,7 +6,10 @@
 
 FString FGLevelConfig::GetMapName() const
 {
-	return MapLevel.ToString();
+	FString Path = FPackageName::ObjectPathToPackageName(MapLevel.ToString());
+	//return MapLevel.ToString()
+	
+	return Path;
 }
 
 FString FGLevelConfig::ConstructTravelURL() const

@@ -6,23 +6,23 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
 #include "Pixel2DTDCharacter.h"
-#include "GCharacterBase.generated.h"
+#include "GCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EGDHitReactDirection, Direction);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AGCharacterBase*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AGCharacter*, Character);
 
 class UGCharacterInfoComponent;
 /**
  * 
  */
 UCLASS()
-class RUNNER_API AGCharacterBase : public APixel2DTDCharacter, public IAbilitySystemInterface
+class RUNNER_API AGCharacter : public APixel2DTDCharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AGCharacterBase(const FObjectInitializer& ObjectInitializer);
+	AGCharacter(const FObjectInitializer& ObjectInitializer);
 
 public:
 	virtual void PossessedBy(AController* NewController) override;

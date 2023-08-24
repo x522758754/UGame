@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 
 #include "Player/GPlayerState.h"
 #include "AbilitySystem/GGameplayTags.h"
@@ -13,23 +13,23 @@
 #include "Character/Component/GCharacterMovementComponent.h"
 #include "Character/GCharacterInfoComponent.h"
 
-FName AGCharacterBase::InfoComponentName(TEXT("InfoComponent"));
+FName AGCharacter::InfoComponentName(TEXT("InfoComponent"));
 
 // Sets default values
-AGCharacterBase::AGCharacterBase(const FObjectInitializer& ObjectInitializer) :
+AGCharacter::AGCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
+	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
 
 	InfoComponent = CreateDefaultSubobject<UGCharacterInfoComponent>(InfoComponentName);
-
+	GetCapsuleComponent()->SetHiddenInGame(false);
 	bAlwaysRelevant = true;
 }
 
-void AGCharacterBase::PossessedBy(AController* NewController)
+void AGCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
@@ -54,7 +54,7 @@ void AGCharacterBase::PossessedBy(AController* NewController)
 	
 }
 
-void AGCharacterBase::OnRep_PlayerState()
+void AGCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
@@ -65,22 +65,22 @@ void AGCharacterBase::OnRep_PlayerState()
 	}
 }
 
-UAbilitySystemComponent* AGCharacterBase::GetAbilitySystemComponent() const
+UAbilitySystemComponent* AGCharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent.Get();
 }
 
-bool AGCharacterBase::IsAlive() const
+bool AGCharacter::IsAlive() const
 {
 	return GetHealth() > 0.0f;
 }
 
-int32 AGCharacterBase::GetAbilityLevel(EGAbilityInputID AbilityID) const
+int32 AGCharacter::GetAbilityLevel(EGAbilityInputID AbilityID) const
 {
 	return 1;
 }
 
-void AGCharacterBase::RemoveCharacterAbilities()
+void AGCharacter::RemoveCharacterAbilities()
 {
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || !AbilitySystemComponent->bCharacterAbilitiesGiven)
 	{
@@ -106,7 +106,7 @@ void AGCharacterBase::RemoveCharacterAbilities()
 	AbilitySystemComponent->bCharacterAbilitiesGiven = false;
 }
 
-EGDHitReactDirection AGCharacterBase::GetHitReactDirection(const FVector & ImpactPoint)
+EGDHitReactDirection AGCharacter::GetHitReactDirection(const FVector & ImpactPoint)
 {
 	const FVector& ActorLocation = GetActorLocation();
 	// PointPlaneDist is super cheap - 1 vector subtraction, 1 dot product.
@@ -145,7 +145,7 @@ EGDHitReactDirection AGCharacterBase::GetHitReactDirection(const FVector & Impac
 	return EGDHitReactDirection::Front;
 }
 
-void AGCharacterBase::PlayHitReact_Implementation(FGameplayTag HitDirection, AActor * DamageCauser)
+void AGCharacter::PlayHitReact_Implementation(FGameplayTag HitDirection, AActor * DamageCauser)
 {
 	if (IsAlive())
 	{
@@ -168,12 +168,12 @@ void AGCharacterBase::PlayHitReact_Implementation(FGameplayTag HitDirection, AAc
 	}
 }
 
-bool AGCharacterBase::PlayHitReact_Validate(FGameplayTag HitDirection, AActor * DamageCauser)
+bool AGCharacter::PlayHitReact_Validate(FGameplayTag HitDirection, AActor * DamageCauser)
 {
 	return true;
 }
 
-int32 AGCharacterBase::GetCharacterLevel() const
+int32 AGCharacter::GetCharacterLevel() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -183,7 +183,7 @@ int32 AGCharacterBase::GetCharacterLevel() const
 	return 0;
 }
 
-float AGCharacterBase::GetHealth() const
+float AGCharacter::GetHealth() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -193,7 +193,7 @@ float AGCharacterBase::GetHealth() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMaxHealth() const
+float AGCharacter::GetMaxHealth() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -203,7 +203,7 @@ float AGCharacterBase::GetMaxHealth() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMana() const
+float AGCharacter::GetMana() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -213,7 +213,7 @@ float AGCharacterBase::GetMana() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMaxMana() const
+float AGCharacter::GetMaxMana() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -223,7 +223,7 @@ float AGCharacterBase::GetMaxMana() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetStamina() const
+float AGCharacter::GetStamina() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -233,7 +233,7 @@ float AGCharacterBase::GetStamina() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMaxStamina() const
+float AGCharacter::GetMaxStamina() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -243,7 +243,7 @@ float AGCharacterBase::GetMaxStamina() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMoveSpeed() const
+float AGCharacter::GetMoveSpeed() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -253,7 +253,7 @@ float AGCharacterBase::GetMoveSpeed() const
 	return 0.0f;
 }
 
-float AGCharacterBase::GetMoveSpeedBaseValue() const
+float AGCharacter::GetMoveSpeedBaseValue() const
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -264,7 +264,7 @@ float AGCharacterBase::GetMoveSpeedBaseValue() const
 }
 
 // Run on Server and all clients
-void AGCharacterBase::Die()
+void AGCharacter::Die()
 {
 	// Only runs on Server
 	RemoveCharacterAbilities();
@@ -296,18 +296,18 @@ void AGCharacterBase::Die()
 	}
 }
 
-void AGCharacterBase::FinishDying()
+void AGCharacter::FinishDying()
 {
 	Destroy();
 }
 
 // Called when the game starts or when spawned
-void AGCharacterBase::BeginPlay()
+void AGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void AGCharacterBase::AddCharacterAbilities()
+void AGCharacter::AddCharacterAbilities()
 {
 	// Grant abilities, but only on the server	
 	if (GetLocalRole() != ROLE_Authority || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bCharacterAbilitiesGiven)
@@ -324,7 +324,7 @@ void AGCharacterBase::AddCharacterAbilities()
 	AbilitySystemComponent->bCharacterAbilitiesGiven = true;
 }
 
-void AGCharacterBase::InitializeAttributes()
+void AGCharacter::InitializeAttributes()
 {
 	if (!AbilitySystemComponent.IsValid())
 	{
@@ -348,7 +348,7 @@ void AGCharacterBase::InitializeAttributes()
 	}
 }
 
-void AGCharacterBase::AddStartupEffects()
+void AGCharacter::AddStartupEffects()
 {
 	if(!HasAuthority() || !AbilitySystemComponent.IsValid() || AbilitySystemComponent->bStartupEffectsApplied)
 	{
@@ -370,7 +370,7 @@ void AGCharacterBase::AddStartupEffects()
 	AbilitySystemComponent->bStartupEffectsApplied = true;
 }
 
-void AGCharacterBase::SetHealth(float Health)
+void AGCharacter::SetHealth(float Health)
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -381,7 +381,7 @@ void AGCharacterBase::SetHealth(float Health)
 	EffectContext.AddSourceObject(this);
 }
 
-void AGCharacterBase::SetMana(float Mana)
+void AGCharacter::SetMana(float Mana)
 {
 	if (AttributeSetBase.IsValid())
 	{
@@ -389,7 +389,7 @@ void AGCharacterBase::SetMana(float Mana)
 	}
 }
 
-void AGCharacterBase::SetStamina(float Stamina)
+void AGCharacter::SetStamina(float Stamina)
 {
 	if (AttributeSetBase.IsValid())
 	{

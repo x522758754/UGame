@@ -40,10 +40,10 @@ public:
 
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Range;
+	float Range = 1000;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	float Damage;
+	float Damage = 1.f;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);

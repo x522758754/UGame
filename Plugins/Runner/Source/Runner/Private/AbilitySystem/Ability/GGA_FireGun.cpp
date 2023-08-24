@@ -6,9 +6,9 @@
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTask/GAT_PlayMontageAndWaitForEvent.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Actor/GProjectile.h"
+#include "Actor/Projectile/GProjectile.h"
 
 UGGA_FireGun::UGGA_FireGun()
 {
@@ -70,7 +70,7 @@ void UGGA_FireGun::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 	// Predicting projectiles is an advanced topic not covered in this example.
 	if (GetOwningActorFromActorInfo()->GetLocalRole() == ROLE_Authority && EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.SpawnProjectile")))
 	{
-		AGCharacterBase* Hero = Cast<AGCharacterBase>(GetAvatarActorFromActorInfo());
+		AGCharacter* Hero = Cast<AGCharacter>(GetAvatarActorFromActorInfo());
 		if (!Hero)
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);

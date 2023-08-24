@@ -3,16 +3,15 @@
 
 #include "Level/Loading/GLevelLoadingOpenLevel.h"
 
-#include "GLevelSubsystem.h"
+#include "Level/GLevelSubsystem.h"
 
 FGLevelLoadingOpenLevel::FGLevelLoadingOpenLevel()
+	: FGLevelLoadingBase(0)
 {
-	ProgressStage.Empty();
-	ProgressStage.Add(0.5);//Loading
-	ProgressStage.Add(0.7);//SceneActorReady
-	ProgressStage.Add(0.8);//AllStreamingCompleted
-	ProgressStage.Add(0.9);//SceneReady
-	ProgressStage.Add(1);	//Done
+	ProgressStage.Add(0.5);//MapLoading
+	ProgressStage.Add(0.7);//NpcCreating
+	ProgressStage.Add(0.9);//PlayerCreating
+	ProgressStage.Add(1);//Done
 }
 
 
@@ -26,28 +25,34 @@ void FGLevelLoadingOpenLevel::OnTick(float DeltaTime)
 
 	switch (CurrentStage)
 	{
-	case EStage::Loading:
+	case EStage::MapLoading:
+		break;
+	case EStage::LevelInit:
 		{
-			SetCurrentStage(EStage::SceneActorReady);
+			if(UGLevelSubsystem::Get()->TryInitLevel())
+			{
+				SetNextStage();
+			}
 		}
 		break;
-	case EStage::SceneActorReady:
+	case EStage::PlayerCreating:
 		{
-			SetCurrentStage(EStage::AllStreamingCompleted);
-		}
-		break;
-	case EStage::AllStreamingCompleted:
-		{
-			SetCurrentStage(EStage::PlayerReady);
-		}
-		break;
-	case EStage::PlayerReady:
-		{
-			SetCurrentStage(EStage::Done);
+			if(UGLevelSubsystem::Get()->TryPreparePlayer())
+			{
+				SetCurrentStage(EStage::Done);
+			}
 		}
 		break;
 	default:
 		SetCurrentStage(EStage::Done);
 	}
 	
+}
+
+void FGLevelLoadingOpenLevel::OnMapLoaded()
+{
+	if(CurrentStage == EStage::MapLoading)
+	{
+		SetNextStage();
+	}
 }

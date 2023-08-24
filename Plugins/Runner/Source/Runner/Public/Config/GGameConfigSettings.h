@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Camera/GCameraDef.h"
 #include "Engine/DeveloperSettings.h"
-#include "Config/GConfigData.h"
+#include "Config/GConfigDataAsset.h"
 #include "GGameConfigSettings.generated.h"
 
 class AGHeroCharacter;
@@ -29,7 +29,7 @@ public:
 public:
 
 	UPROPERTY(Config, noclear, EditAnywhere)
-	TSoftObjectPtr<UGConfigData> ConfigDataPath;
+	TSoftObjectPtr<UGConfigDataAsset> ConfigDataPath;
 
 	UPROPERTY(Config, noclear, EditAnywhere)
 	TSoftClassPtr<AGCameraActor> Camera;
@@ -48,4 +48,10 @@ public:
 
 	UPROPERTY(config, EditAnywhere, Category = "Input", meta = (ClampMin = 0.f))
 	float InputClickMaxDistance = 2;
+
+	UPROPERTY(config, noclear, EditAnywhere)
+	float ClientNpcLoadDistance = 1000;
+
+	UPROPERTY(config, noclear, EditAnywhere)
+	float ClientNpcDisappearDistance = 2000;
 };

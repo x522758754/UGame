@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "Player/GPlayerController.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "AbilitySystem/GAbilityDefine.h"
 
@@ -54,18 +54,18 @@ void UGAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallb
 	// Get the Target actor, which should be our owner
 	AActor* TargetActor = nullptr;
 	AController* TargetController = nullptr;
-	AGCharacterBase* TargetCharacter = nullptr;
+	AGCharacter* TargetCharacter = nullptr;
 	if (Data.Target.AbilityActorInfo.IsValid() && Data.Target.AbilityActorInfo->AvatarActor.IsValid())
 	{
 		TargetActor = Data.Target.AbilityActorInfo->AvatarActor.Get();
 		TargetController = Data.Target.AbilityActorInfo->PlayerController.Get();
-		TargetCharacter = Cast<AGCharacterBase>(TargetActor);
+		TargetCharacter = Cast<AGCharacter>(TargetActor);
 	}
 
 	// Get the Source actor
 	AActor* SourceActor = nullptr;
 	AController* SourceController = nullptr;
-	AGCharacterBase* SourceCharacter = nullptr;
+	AGCharacter* SourceCharacter = nullptr;
 	if (Source && Source->AbilityActorInfo.IsValid() && Source->AbilityActorInfo->AvatarActor.IsValid())
 	{
 		SourceActor = Source->AbilityActorInfo->AvatarActor.Get();
@@ -81,11 +81,11 @@ void UGAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallb
 		// Use the controller to find the source pawn
 		if (SourceController)
 		{
-			SourceCharacter = Cast<AGCharacterBase>(SourceController->GetPawn());
+			SourceCharacter = Cast<AGCharacter>(SourceController->GetPawn());
 		}
 		else
 		{
-			SourceCharacter = Cast<AGCharacterBase>(SourceActor);
+			SourceCharacter = Cast<AGCharacter>(SourceActor);
 		}
 
 		// Set the causer actor based on context if it's set

@@ -15,7 +15,7 @@ class  UGHeroFunctions : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
-	static AGHeroCharacter* SpawnHero(int32 HeroId, const FTransform& Transform);
+	static AGHeroCharacter* SpawnHero(int32 ConfigId, const FTransform& Transform);
 };
 
 

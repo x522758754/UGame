@@ -115,14 +115,27 @@ FVector AGPlayerCameraManager::GetPivotLocation()
 	return PivotLoc;
 }
 
+FVector AGPlayerCameraManager::GetCameraComponentLocation() const
+{
+	FVector Loc =  GetCameraCachePOV().Location;
+
+	UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CachePOV Location:%s"), *Loc.ToString());
+	if(ActiveCamera.IsValid())
+	{
+		Loc = ActiveCamera->GetCameraComponent()->GetComponentLocation();
+		UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CameraComponent Location:%s"), *Loc.ToString());
+	}
+	return Loc;
+}
+
 void AGPlayerCameraManager::SetConfig(int32 CfgId)
 {
-	if(!UGConfigData::Get()->CameraConfigs.Contains(CfgId))
+	if(!UGConfigDataAsset::Get()->CameraConfigs.Contains(CfgId))
 	{
 		UE_LOG(LogTemp, Error, TEXT("AGPlayerCameraManager::SetConfig CfgId:%d"), CfgId);
 		return;
 	}
-	Config = UGConfigData::Get()->CameraConfigs[CfgId];
+	Config = UGConfigDataAsset::Get()->CameraConfigs[CfgId];
 	CameraCfgId = CfgId;
 }
 

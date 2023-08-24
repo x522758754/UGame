@@ -6,7 +6,9 @@
 
 class RUNNER_API FGLevelLoadingBase
 {
+	friend class UGLevelSubsystem;
 public:
+	FGLevelLoadingBase(int32 MaxStage);
 	virtual ~FGLevelLoadingBase() {}
 public:
 	virtual void OnTick(float DeltaTime);
@@ -18,6 +20,8 @@ public:
 	int32 GetLoadingLevelId() const {return LoadingLevelId;}
 protected:
 	void SetCurrentStage(int Stage);
+	void SetNextStage();
+	virtual void OnMapLoaded() {};
 protected:
 	bool IsStreamingCompleted(const FVector& Location);
 public:
@@ -28,6 +32,7 @@ protected:
 	float MaxDeltaProgress = 0.1;
 
 protected:
+	int32 MaxStage;
 	TArray<float> ProgressStage;
 	int CurrentStage = 0;
 	float CurrentStageProgress = 0;

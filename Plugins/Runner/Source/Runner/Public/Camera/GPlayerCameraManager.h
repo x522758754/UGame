@@ -28,6 +28,7 @@ public:
 	void SetFollow(AActor* Target, FName SocketName = NAME_None, float FollowSpeed = -1.f);
 	AActor* GetFollow();
 	FVector GetPivotLocation(); //获取实际跟随点
+	FVector GetCameraComponentLocation() const;
 
 	void SetConfig(int32 CfgId);
 	int32 GetConfig() const;

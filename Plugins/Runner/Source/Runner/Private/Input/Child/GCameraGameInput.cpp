@@ -3,7 +3,7 @@
 
 #include "Input/Child/GCameraGameInput.h"
 
-#include "GPlayerCameraManager.h"
+#include "Camera/GPlayerCameraManager.h"
 #include "System/GCommonFunctions.h"
 
 void UGCameraGameInput::OnSlideScreen_Implementation(const FVector& Delta)

@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Config/GConfigData.h"
+#include "Config/GConfigDataAsset.h"
 
 #include "System/GAssetManager.h"
 
-TWeakObjectPtr<UGConfigData> UGConfigData::s_Instance = nullptr;
-UGConfigData* UGConfigData::Get()
+TWeakObjectPtr<UGConfigDataAsset> UGConfigDataAsset::s_Instance = nullptr;
+UGConfigDataAsset* UGConfigDataAsset::Get()
 {
 	if(!s_Instance.IsValid())
 	{

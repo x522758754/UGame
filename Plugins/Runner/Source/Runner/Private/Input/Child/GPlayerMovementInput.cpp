@@ -3,7 +3,7 @@
 
 #include "Input/Child/GPlayerMovementInput.h"
 
-#include "GPlayerCameraManager.h"
+#include "Camera/GPlayerCameraManager.h"
 #include "System/GCommonFunctions.h"
 #include "Character/Hero/GHeroCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"

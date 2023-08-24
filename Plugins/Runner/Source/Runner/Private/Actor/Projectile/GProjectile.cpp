@@ -1,10 +1,10 @@
 // Copyright 2020 Dan Kestranek.
 
 
-#include "Actor/GProjectile.h"
+#include "Actor/Projectile/GProjectile.h"
 
 #include "AbilitySystemComponent.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -17,6 +17,7 @@ AGProjectile::AGProjectile()
 	bReplicates = true;
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
+	
 }
 
 void AGProjectile::OnOverlap(AActor* OtherActor)
@@ -32,9 +33,10 @@ void AGProjectile::OnOverlap(AActor* OtherActor)
 		return;
 	}
 
-	if(AGCharacterBase* Character = Cast<AGCharacterBase>(OtherActor))
+	if(AGCharacter* Character = Cast<AGCharacter>(OtherActor))
 	{
 		TArray<FHitResult> OutHits;
+		//const TArray<TEnumAsByte<EObjectTypeQuery> > ObjectTypes = {UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic), UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic)};
 		if(GetWorld()->LineTraceMultiByObjectType(OutHits, GetActorLocation(), Character->GetActorLocation(), FCollisionObjectQueryParams(ECC_Pawn)))
 		{
 			for(auto &HitResult : OutHits)

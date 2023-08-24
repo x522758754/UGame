@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GLevelData.generated.h"
 
+class UGLevelNpcConfigAsset;
+class AGLevelActor;
+
 USTRUCT(BlueprintType)
 struct RUNNER_API FGLevelConfig
 {
@@ -22,6 +25,12 @@ struct RUNNER_API FGLevelConfig
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FTransform BornTransform;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<UGLevelNpcConfigAsset> NpcConfigAsset;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftClassPtr<AGLevelActor> LevelActorClassPath;
 
 public:
 	FString GetMapName() const;

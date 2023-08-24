@@ -1,6 +1,9 @@
 ﻿#include "AbilitySystem/GGameplayTags.h"
 #include "GameplayTagsManager.h"
 
+
+//UE_DEFINE_GAMEPLAY_TAG(TAG_Test_Message, "Test.Message");
+
 FGGameplayTags FGGameplayTags::GameplayTags;
 
 void FGGameplayTags::InitializeNativeTags()
@@ -39,6 +42,11 @@ FGameplayTag FGGameplayTags::FindTagByString(FString TagString, bool bMatchParti
 
 void FGGameplayTags::AddAllTags()
 {
+	//Ability
+	AddTag(Ability, "Ability", "Ability");
+	AddTag(Ability_NotCanceledByStun, "Ability.NotCanceledByStun", "Ability Not Canceled By Stun");
+
+	//Effect
 	AddTag(Effect_HitReactFront, "Effect.HitReact.Front", "Effect Hit React Front");
 	AddTag(Effect_HitReactBack, "Effect.HitReact.Back", "Effect Hit React Back");
 	AddTag(Effect_HitReactRight, "Effect.HitReact.Right", "Effect Hit React Right");
@@ -46,12 +54,19 @@ void FGGameplayTags::AddAllTags()
 	
 	AddTag(Effect_RemoveOnDeath, "Effect.RemoveOnDeath", "Effect Remove On Death");
 
+	//State
 	AddTag(State_Dead, "State.Dead", "State Dead");
+	AddTag(State_DebuffStun, "State.Debuff.Stun", "State Debuff Stun");
+
 	AddTag(State_AimDownSights, "State.AimDownSights", "State Aim Down Sights");
 	AddTag(State_AimDownSightsRemoval, "State.AimDownSights.Removal", "State Aim Down Sights Removal");
 
+	//Event
 	AddTag(Event_MontageEndAbility, "Event.Montage.EndAbility", "Event Montage End Ability");
 	AddTag(Event_MontageSpawnProjectile, "Event.Montage.SpawnProjectile", "Event Montage Spawn Projectile");
+
+	//Data
+	AddTag(Data_Damage, "Data.Damage", "Data Damage");
 }
 
 void FGGameplayTags::AddTag(FGameplayTag& OutTag, const ANSICHAR* TagName, const ANSICHAR* TagComment)

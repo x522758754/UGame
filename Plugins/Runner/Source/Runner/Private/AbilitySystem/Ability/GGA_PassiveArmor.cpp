@@ -3,8 +3,8 @@
 
 #include "AbilitySystem/Ability/GGA_PassiveArmor.h"
 
-#include "AbilityTask_WaitDelay.h"
-#include "AbilityTask_WaitGameplayEffectStackChange.h"
+#include "Abilities/Tasks/AbilityTask_WaitDelay.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectStackChange.h"
 #include "System/GAssetManager.h"
 #include "AbilitySystem/AbilityTask/GAT_WaitReceiveDamage.h"
 #include "AbilitySystem/GGameplayTags.h"

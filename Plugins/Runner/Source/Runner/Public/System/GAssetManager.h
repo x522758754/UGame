@@ -9,7 +9,7 @@
 //FSoftObjectPath 能放入UE的任何资源,tostring的路径就是相对游戏的路径,SoftObjectPathtostring=/Game/UMG/LoginUI.LoginUI
 //FSoftClassPath 只能放入蓝图类,tostring的路径结尾_C,SoftClasstPathtostring=/Game/UMG/LoginUI.LoginUI_C
 
-class UGConfigData;
+class UGConfigDataAsset;
 
 enum class EGLoadPriority : int32
 {
@@ -46,7 +46,7 @@ public:
 	template<typename AssetType>
 	static void AsyncLoadSubclass(const TSoftClassPtr<AssetType>& AssetPointer, TFunction<void(TSubclassOf<AssetType>)> Callback = nullptr, EGLoadPriority Priority = EGLoadPriority::Normal, bool bKeepInMemory = true);
 
-	UGConfigData* GetConfigData();
+	UGConfigDataAsset* GetConfigData();
 
 protected:
 	static UObject* SynchronousLoadAsset(const FSoftObjectPath& AssetPath);
@@ -59,7 +59,7 @@ protected:
 
 protected:
 	UPROPERTY()
-	UGConfigData* ConfigData;
+	UGConfigDataAsset* ConfigData;
 
 private:
 	

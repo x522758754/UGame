@@ -4,7 +4,7 @@
 #include "AbilitySystem/AbilityTask/GAT_AttackAndWaitForEvent.h"
 
 #include "Pixel2DTDComponent.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "PaperFlipbook.h"
 #include "AbilitySystemGlobals.h"

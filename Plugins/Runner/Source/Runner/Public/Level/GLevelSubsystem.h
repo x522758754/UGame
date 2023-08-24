@@ -7,7 +7,10 @@
 #include "Event/GEventObserverHolder.h"
 #include "GLevelSubsystem.generated.h"
 
+struct FGLevelConfig;
 class FGLevelLoadingBase;
+class UGLevelNpcConfigAsset;
+class AGLevelActor;
 /**
  * 
  */
@@ -19,11 +22,7 @@ class RUNNER_API UGLevelSubsystem : public UGGameInstanceSubsystem
 public:
 	enum class ELoadingType : int8
 	{
-		Dynamic = 0,
-		Travel = 1,
-		OpenLevel = 2,
-		OpenLevel_Travel = 3,
-		Transfer = 4,
+		OpenLevel = 1,
 		Num,
 	};
 	
@@ -31,23 +30,31 @@ public:
 	static UGLevelSubsystem* Get();
 protected:
 	static TWeakObjectPtr<UGLevelSubsystem> s_Instance;
+
+public:
+	int32 GetOpenLevelId() const;
+	void ChangeLevel(int32 LevelId);
+	UGLevelNpcConfigAsset* GetCurrentLevelNpcConfigAsset() const;
+
+	bool TryInitLevel();
+	bool TryPreparePlayer();
 protected:
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnGameInstanceInit() override;
 	virtual void OnTick(float DeltaTime) override;
 	
-	void OnMapLoadComplete(const float LoadTime, const FString& MapName);
+	void OnLevelBeginLoading(ELoadingType Type, int32 LevelId);
+	void OnMapLoadComplete(int32 LevelId, const float LoadTime, const FString& MapName);
 	void OnLevelLoaded();
-public:
-	int32 GetOpenLevelId() const;
-	void ChangeLevel(int32 LevelId);
-	
-protected:
-	void BeginLoading(ELoadingType Type, int32 LevelId);
 private:
 	//Level
-	bool OpenLevelLoaded = false;
 	int32 OpenLevelId;
+
+	const FGLevelConfig* CurrentLevelConfig = nullptr;
+	UPROPERTY(Transient)
+	UGLevelNpcConfigAsset* CurrentLevelNpcConfigAsset;
+	UPROPERTY(Transient)
+	TWeakObjectPtr<AGLevelActor> LevelActor;
 
 	//Loading
 	TSharedPtr<FGLevelLoadingBase> CurrentLoading;

@@ -3,7 +3,7 @@
 
 #include "AbilitySystem/Ability/GGA_CharacterJump.h"
 #include "AbilitySystem/GGameplayTags.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 
 UGGA_CharacterJump::UGGA_CharacterJump()
 {

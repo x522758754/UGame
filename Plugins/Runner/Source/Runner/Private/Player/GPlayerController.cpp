@@ -8,6 +8,7 @@
 #include "System/GCommonFunctions.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "Camera/GPlayerCameraManager.h"
+#include "Engine/LocalPlayer.h"
 #include "Player/GPlayerState.h"
 #include "GameFramework/PlayerInput.h"
 #include "Input/GInputBaseComponent.h"

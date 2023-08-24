@@ -5,6 +5,16 @@
 
 #include "Event/GEventBasic.h"
 
+FGLevelLoadingBase::FGLevelLoadingBase(int32 MaxStage)
+{
+	ProgressStage.Empty();
+
+	for(int32 i = 0; i < MaxStage; ++i)
+	{
+		ProgressStage.Add(i / (float)MaxStage);
+	}
+}
+
 void FGLevelLoadingBase::OnTick(float DeltaTime)
 {
 	if (Progress >= 1)
@@ -62,10 +72,14 @@ void FGLevelLoadingBase::SetCurrentStage(int Stage)
 	}
 }
 
+void FGLevelLoadingBase::SetNextStage()
+{
+	SetCurrentStage(CurrentStage + 1);
+}
+
 void FGLevelLoadingBase::Begin(int32 LevelId)
 {
 	LoadingLevelId = LevelId;
-	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadStart, LevelId);
 	
 	SetCurrentStage(0);
 	Progress = 0;
@@ -74,7 +88,6 @@ void FGLevelLoadingBase::Begin(int32 LevelId)
 void FGLevelLoadingBase::LoadEnd()
 {
 	UE_LOG(LogTemp, Log, TEXT("FGLevelLoading::LoadEnd"))
-	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadEnd);
 }
 
 bool FGLevelLoadingBase::IsStreamingCompleted(const FVector& Location)

@@ -10,7 +10,7 @@
 #include "Character/Hero/GHeroInfoComponent.h"
 
 AGHeroCharacter::AGHeroCharacter(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer.SetDefaultSubobjectClass<UGHeroInfoComponent>(AGCharacterBase::InfoComponentName))
+	:Super(ObjectInitializer.SetDefaultSubobjectClass<UGHeroInfoComponent>(AGCharacter::InfoComponentName))
 {
 }
 
@@ -98,7 +98,7 @@ void AGHeroCharacter::OnMoveUpdate()
 
 void AGHeroCharacter::BindAscInput()
 {
-	if(AbilitySystemComponent.IsValid() && IsValid(InputComponent))
+	if(AbilitySystemComponent.IsValid() && InputComponent)
 	{
 		FGameplayAbilityInputBinds InputBinds(FString("ConfirmTarget"),
 			FString("CancelTarget"),

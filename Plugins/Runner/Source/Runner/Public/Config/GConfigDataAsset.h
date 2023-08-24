@@ -7,20 +7,20 @@
 #include "Camera/GCameraDef.h"
 #include "Level/Data/GLevelData.h"
 #include "Character/Data/GHeroData.h"
-#include "GConfigData.generated.h"
+#include "GConfigDataAsset.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RUNNER_API UGConfigData : public UPrimaryDataAsset
+class RUNNER_API UGConfigDataAsset : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	static UGConfigData* Get();
+	static UGConfigDataAsset* Get();
 private:
-	static TWeakObjectPtr<UGConfigData> s_Instance;
+	static TWeakObjectPtr<UGConfigDataAsset> s_Instance;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

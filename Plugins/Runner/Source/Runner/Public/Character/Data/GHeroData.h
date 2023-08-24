@@ -15,7 +15,8 @@ struct FGHeroConfig
 {
 	GENERATED_BODY()
 	
-	
+	UPROPERTY(VisibleAnywhere)
+	int32 ConfigId;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Hero")
 	TSoftClassPtr<AGHeroCharacter> HeroClass;
 };

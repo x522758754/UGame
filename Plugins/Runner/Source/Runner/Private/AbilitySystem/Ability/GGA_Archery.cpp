@@ -3,14 +3,14 @@
 
 #include "AbilitySystem/Ability/GGA_Archery.h"
 
-#include "GAssetManager.h"
-#include "GAT_AttackAndWaitForEvent.h"
+#include "System/GAssetManager.h"
+#include "AbilitySystem/AbilityTask/GAT_AttackAndWaitForEvent.h"
 #include "Character/Hero/GHeroCharacter.h"
 #include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "AbilitySystem/AbilityTask/GAT_PlayMontageAndWaitForEvent.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Actor/GProjectile.h"
+#include "Actor/Projectile/GProjectile.h"
 
 
 UGGA_Archery::UGGA_Archery()
@@ -93,7 +93,7 @@ void UGGA_Archery::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 				// Pass the damage to the Damage Execution Calculation through a SetByCaller value on the GameplayEffectSpec
 				if(DamageEffectSpecHandle.IsValid())
 				{
-					DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), Damage);
+					DamageEffectSpecHandle.Data.Get()->SetSetByCallerMagnitude(FGGameplayTags::Get().Data_Damage, Damage);
 				}
 
 				Projectile->DamageEffectSpecHandle = DamageEffectSpecHandle;

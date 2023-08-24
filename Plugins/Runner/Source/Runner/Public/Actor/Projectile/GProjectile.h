@@ -27,7 +27,7 @@ public:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void OnOverlap(AActor* OtherActor);
+	virtual void OnOverlap(AActor* OtherActor);
 
 protected:
 	// Called when the game starts or when spawned

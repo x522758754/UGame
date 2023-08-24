@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/GCharacterBase.h"
+#include "Character/GCharacter.h"
 #include "Character/CharacterDef.h"
 #include "GHeroCharacter.generated.h"
 
@@ -12,7 +12,7 @@
  * 
  */
 UCLASS()
-class RUNNER_API AGHeroCharacter : public AGCharacterBase
+class RUNNER_API AGHeroCharacter : public AGCharacter
 {
 	GENERATED_BODY()
 

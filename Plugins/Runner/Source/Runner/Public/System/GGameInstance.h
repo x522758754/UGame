@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "System/GGuidFactory.h"
 #include "GGameInstance.generated.h"
 
 /**
@@ -19,6 +20,9 @@ public:
 
 	UGGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+public:
+	FGGuidFactory& GetGuidFactory() {return GuidFactory;}
+
 protected:
 
 	virtual void Init() override;
@@ -31,4 +35,7 @@ protected:
 	virtual void Tick( float DeltaTime ) override;
 protected:
 	static TWeakObjectPtr<UGGameInstance> GameInstancePtr;
+
+private:
+	FGGuidFactory GuidFactory;
 };

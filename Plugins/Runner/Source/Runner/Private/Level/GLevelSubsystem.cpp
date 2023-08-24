@@ -3,82 +3,23 @@
 
 #include "Level/GLevelSubsystem.h"
 
-#include "System/GCommonFunctions.h"
-#include "System/GAssetManager.h"
-#include "Config/GConfigData.h"
-#include "Event/GEventDef.h"
 #include "Config/GGameConfigSettings.h"
 #include "Character/Hero/GHeroFunctions.h"
 #include "Character/Hero/GHeroCharacter.h"
-#include "Camera/GPlayerCameraManager.h"
-#include "Player/GPlayerController.h"
-#include "Level/Data/GLevelData.h"
+#include "System/GCommonFunctions.h"
+#include "System/GAssetManager.h"
 #include "System/GGameInstance.h"
+#include "Player/GPlayerController.h"
+#include "Config/GConfigDataAsset.h"
+#include "Event/GEventDef.h"
+#include "Level/Data/GLevelData.h"
+#include "Level/Data/GLevelNpcConfigAsset.h"
+#include "Level/GLevelActor.h"
+#include "Level/Loading/GLevelLoadingOpenLevel.h"
 #include "Kismet/GameplayStatics.h"
-#include "Loading/GLevelLoadingOpenLevel.h"
+
 
 TWeakObjectPtr<UGLevelSubsystem> UGLevelSubsystem::s_Instance =	nullptr;
-
-bool UGLevelSubsystem::ShouldCreateSubsystem(UObject* Outer) const
-{
-	return Super::ShouldCreateSubsystem(Outer);
-}
-
-void UGLevelSubsystem::OnGameInstanceInit()
-{
-	Super::OnGameInstanceInit();
-
-	const TFunction<void(const float, const FString&)> ObserverMapLoadComplete = [this](const float LoadTime, const FString& MapName)
-	{
-		OnMapLoadComplete(LoadTime, MapName);
-	};
-	EventObserverHolder.Observe(EGEventType::MapLoadComplete, ObserverMapLoadComplete);
-
-	const TFunction<void(const float, const FString&)> ObserverLevelLoadEnd = [this](const float LoadTime, const FString& MapName)
-	{
-		OnLevelLoaded();
-	};
-	EventObserverHolder.Observe(EGEventType::LevelLoadEnd, ObserverLevelLoadEnd);
-}
-
-void UGLevelSubsystem::OnTick(float DeltaTime)
-{
-	Super::OnTick(DeltaTime);
-	if(CurrentLoading.IsValid())
-	{
-		CurrentLoading->OnTick(DeltaTime);
-		if(CurrentLoading->GetProgress() >= 1)
-		{
-			CurrentLoading->LoadEnd();
-			CurrentLoading = nullptr;
-		}
-	}
-}
-
-void UGLevelSubsystem::OnMapLoadComplete(const float LoadTime, const FString& MapName)
-{
-	UE_LOG(LogTemp, Display, TEXT("UGLevelSubsystem::OnMapLoadComplete LoadTime:%f MapName:%s"), LoadTime, *MapName);
-}
-
-void UGLevelSubsystem::OnLevelLoaded()
-{
-	UE_LOG(LogTemp, Display, TEXT("UGLevelSubsystem::OnLevelLoaded"));
-	//创建玩家
-	if(UGConfigData::Get()->LevelConfigs.Contains(OpenLevelId))
-	{
-		const FGLevelConfig& Cfg = UGConfigData::Get()->LevelConfigs[OpenLevelId];
-		/*AGHeroCharacter *Hero = UGHeroFunctions::SpawnHero(UGGameConfigSettings::Get()->DefaultHeroId, Cfg.BornTransform);
-		if(Hero)
-		{
-			if(AGPlayerController* PlayerController = UGCommonFunctions::GetPlayerController())
-			{
-				PlayerController->Possess(Hero);
-				//PlayerController->SetPawn(Hero);
-			}
-			//设置相机
-		}*/
-	}
-}
 
 UGLevelSubsystem* UGLevelSubsystem::Get()
 {
@@ -98,28 +39,113 @@ void UGLevelSubsystem::ChangeLevel(int32 LevelId)
 {
 	if(LevelId != OpenLevelId)
 	{
-		if(!UGConfigData::Get()->LevelConfigs.Contains(LevelId))
+		if(!UGConfigDataAsset::Get()->LevelConfigs.Contains(LevelId))
 		{
 			UE_LOG(LogTemp, Error, TEXT("UGLevelSubsystem::ChangeLevel LevelId:%d"), LevelId);
 			return;
 		}
 		
-		const FGLevelConfig& Cfg = UGConfigData::Get()->LevelConfigs[LevelId];
-		BeginLoading(ELoadingType::OpenLevel, LevelId);
+		const FGLevelConfig& Cfg = UGConfigDataAsset::Get()->LevelConfigs[LevelId];
+		OnLevelBeginLoading(ELoadingType::OpenLevel, LevelId);
 		OpenLevelId = LevelId;
-		OpenLevelLoaded = false;
 		UGameplayStatics::OpenLevel(GetWorld(), FName(Cfg.GetMapName()));
 	}
 }
 
-void UGLevelSubsystem::BeginLoading(ELoadingType Type, int32 LevelId)
+UGLevelNpcConfigAsset* UGLevelSubsystem::GetCurrentLevelNpcConfigAsset() const
+{
+	return CurrentLevelNpcConfigAsset;
+}
+
+bool UGLevelSubsystem::TryInitLevel()
+{
+	if(LevelActor.IsValid())
+	{
+		return true;
+	}
+	else
+	{
+		if(!CurrentLevelConfig || !CurrentLevelConfig->LevelActorClassPath.IsValid())
+		{
+			LevelActor = GetWorld()->SpawnActor<AGLevelActor>();	//创建默认的SceneActor
+			UE_LOG(LogTemp, Error, TEXT("UGLevelSubsystem::TryInitLevel CurrentLevelConfig Error"));
+		}
+		else
+		{
+			if(TSubclassOf<AGLevelActor> LevelActorClass = UGAssetManager::LoadSubclass(CurrentLevelConfig->LevelActorClassPath))
+			{
+				LevelActor = GetWorld()->SpawnActor<AGLevelActor>(LevelActorClass);
+			}
+			else
+			{
+				LevelActor = GetWorld()->SpawnActor<AGLevelActor>();	//创建默认的SceneActor
+				UE_LOG(LogTemp, Error, TEXT("UGLevelSubsystem::TryInitLevel Load LevelActorClass Error %s"), *CurrentLevelConfig->LevelActorClassPath.ToString());
+			}
+		}
+	}
+	return false;
+}
+
+bool UGLevelSubsystem::TryPreparePlayer()
+{
+	auto Pawn = UGCommonFunctions::GetPlayerController()->GetPawn();
+	if(Pawn)
+	{
+		return true;
+	}
+
+	if(!CurrentLevelConfig)
+	{
+		return false;
+	}
+
+	AGHeroCharacter *Hero = UGHeroFunctions::SpawnHero(UGGameConfigSettings::Get()->DefaultHeroId, CurrentLevelConfig->BornTransform);
+	if(Hero)
+	{
+		if(AGPlayerController* PlayerController = UGCommonFunctions::GetPlayerController())
+		{
+			//PlayerController->Possess(Hero);
+		}
+		//设置相机
+	}
+
+	return true;
+}
+
+bool UGLevelSubsystem::ShouldCreateSubsystem(UObject* Outer) const
+{
+	return Super::ShouldCreateSubsystem(Outer);
+}
+
+void UGLevelSubsystem::OnGameInstanceInit()
+{
+	Super::OnGameInstanceInit();
+
+	const TFunction<void(int32, const float, const FString&)> ObserverMapLoadComplete = [this](int32 LevelId, const float LoadTime, const FString& MapName)
+	{
+		OnMapLoadComplete(LevelId, LoadTime, MapName);
+	};
+	EventObserverHolder.Observe(EGEventType::MapLoadComplete, ObserverMapLoadComplete);
+}
+
+void UGLevelSubsystem::OnTick(float DeltaTime)
+{
+	Super::OnTick(DeltaTime);
+	if(CurrentLoading.IsValid())
+	{
+		CurrentLoading->OnTick(DeltaTime);
+		if(CurrentLoading->GetProgress() >= 1)
+		{
+			CurrentLoading->LoadEnd();
+			CurrentLoading = nullptr;
+			OnLevelLoaded();
+		}
+	}
+}
+
+void UGLevelSubsystem::OnLevelBeginLoading(ELoadingType Type, int32 LevelId)
 {
 	CurrentLoadingType = Type;
-	if (Type < ELoadingType::Dynamic || Type >= ELoadingType::Num)
-	{
-		UE_LOG(LogTemp, Fatal, TEXT("UGLevelSubsystem::SetLoadingType Error Type, %d"), Type);
-		return;
-	}
 	switch (Type)
 	{
 	case ELoadingType::OpenLevel:
@@ -130,5 +156,33 @@ void UGLevelSubsystem::BeginLoading(ELoadingType Type, int32 LevelId)
 		return;
 	}
 	CurrentLoading->Begin(LevelId);
+	CurrentLevelNpcConfigAsset = nullptr;
+	CurrentLevelConfig = nullptr;
+
+	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadStart, LevelId);
 }
 
+void UGLevelSubsystem::OnMapLoadComplete(int32 LevelId, const float LoadTime, const FString& MapName)
+{
+	if(CurrentLoading.IsValid())
+	{
+		if(CurrentLoading->GetLoadingLevelId() == LevelId)
+		{
+			CurrentLoading->OnMapLoaded();
+		}
+	}
+	if(UGConfigDataAsset::Get()->LevelConfigs.Contains(LevelId))
+	{
+		const FGLevelConfig& Cfg = UGConfigDataAsset::Get()->LevelConfigs[LevelId];
+		CurrentLevelNpcConfigAsset = UGAssetManager::LoadAsset(Cfg.NpcConfigAsset);
+		CurrentLevelConfig = &Cfg;
+	}
+}
+
+
+
+void UGLevelSubsystem::OnLevelLoaded()
+{
+	UE_LOG(LogTemp, Display, TEXT("UGLevelSubsystem::OnLevelLoaded"));
+	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadEnd);
+}

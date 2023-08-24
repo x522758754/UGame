@@ -7,17 +7,19 @@
 
 class FGLevelLoadingOpenLevel : public FGLevelLoadingBase
 {
+	friend class UGLevelSubsystem;
 public:
 	FGLevelLoadingOpenLevel();
 	virtual void OnTick(float DeltaTime) override;
+protected:
+	virtual void OnMapLoaded() override;
 
 public:
 	enum EStage
 	{
-		Loading,				//场景加载
-		SceneActorReady,		//创建SceneActor
-		AllStreamingCompleted,	//周围场景是否加载完毕
-		PlayerReady,			//玩家是否准备好
+		MapLoading,				//加载场景
+		LevelInit,				//动态创建，创建Npc或者其它之类
+		PlayerCreating,			//玩家是否准备好
 		Done,
 		Num
 	};

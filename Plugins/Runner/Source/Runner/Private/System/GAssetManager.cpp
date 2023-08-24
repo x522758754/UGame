@@ -33,7 +33,7 @@ void UGAssetManager::StartInitialLoading()
 	ConfigData = LoadAsset(UGGameConfigSettings::Get()->ConfigDataPath);
 }
 
-UGConfigData* UGAssetManager::GetConfigData()
+UGConfigDataAsset* UGAssetManager::GetConfigData()
 {
 	return ConfigData;
 }
@@ -42,12 +42,12 @@ UObject* UGAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetPath)
 {
 	if (AssetPath.IsValid())
 	{
-		TUniquePtr<FScopeLogTime> LogTimePtr;
-
-		if (ShouldLogAssetLoads())
-		{
-			LogTimePtr = MakeUnique<FScopeLogTime>(*FString::Printf(TEXT("Synchronously loaded asset [%s]"), *AssetPath.ToString()), nullptr, FScopeLogTime::ScopeLog_Seconds);
-		}
+		// TUniquePtr<FScopeLogTime> LogTimePtr;
+		//
+		// if (ShouldLogAssetLoads())
+		// {
+		// 	LogTimePtr = MakeUnique<FScopeLogTime>(*FString::Printf(TEXT("Synchronously loaded asset [%s]"), *AssetPath.ToString()), nullptr, FScopeLogTime::ScopeLog_Seconds);
+		// }
 
 		if (IsValid())
 		{

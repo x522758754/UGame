@@ -3,24 +3,26 @@
 
 #include "Character/Hero/GHeroFunctions.h"
 
-#include "Config/GConfigData.h"
+#include "System/GGameInstance.h"
+#include "Character/Hero/GHeroInfoComponent.h"
+#include "Config/GConfigDataAsset.h"
 #include "Character/Hero/GHeroCharacter.h"
 #include "Character/Data/GHeroData.h"
 #include "System/GAssetManager.h"
 #include "System/GCommonFunctions.h"
 
-AGHeroCharacter* UGHeroFunctions::SpawnHero(int32 HeroId , const FTransform& Transform)
+AGHeroCharacter* UGHeroFunctions::SpawnHero(int32 ConfigId , const FTransform& Transform)
 {
 	if(!UGCommonFunctions::GetCurWorld())
 	{
 		return nullptr;
 	}
-	if(!UGConfigData::Get()->HeroConfigs.Contains(HeroId))
+	if(!UGConfigDataAsset::Get()->HeroConfigs.Contains(ConfigId))
 	{
 		return nullptr;
 	}
 
-	const FGHeroConfig& Cfg = UGConfigData::Get()->HeroConfigs[HeroId];
+	const FGHeroConfig& Cfg = UGConfigDataAsset::Get()->HeroConfigs[ConfigId];
 	TSubclassOf<AGHeroCharacter> HeroClass = UGAssetManager::LoadSubclass<AGHeroCharacter>(Cfg.HeroClass);
 	if(HeroClass == nullptr)
 	{
@@ -30,6 +32,12 @@ AGHeroCharacter* UGHeroFunctions::SpawnHero(int32 HeroId , const FTransform& Tra
 	if(!Hero)
 	{
 		return nullptr;	
+	}
+	UGHeroInfoComponent* InfoComponent = Hero->GetInfoComponent<UGHeroInfoComponent>();
+	if(InfoComponent)
+	{
+		InfoComponent->SetConfigId(ConfigId);
+		InfoComponent->SetGuid(UGGameInstance::Get()->GetGuidFactory().GetNextPlayerGuid());
 	}
 
 	return Hero;

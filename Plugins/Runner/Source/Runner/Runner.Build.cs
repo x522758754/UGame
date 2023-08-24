@@ -50,6 +50,10 @@ public class Runner : ModuleRules
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
+		if (Target.Type == TargetRules.TargetType.Editor)
+		{
+			PrivateDependencyModuleNames.Add("UnrealEd");
+		}
 		
 		
 		DynamicallyLoadedModuleNames.AddRange(
