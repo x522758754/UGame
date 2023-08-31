@@ -2,6 +2,8 @@
 
 #include "Level/GLevelConfigActor.h"
 
+#include "Character/AI/GAIItem.h"
+
 #include "Level/Data/GLevelNpcConfigAsset.h"
 #include "Character/Npc/GNpcCharacter.h"
 #include "Character/Npc/GNpcInfoComponent.h"
@@ -91,6 +93,13 @@ void AGLevelConfigActor::GenerateNpcConfiguration()
 		}
 		const FGNpcConfig& NpcConfig = InfoComponent->GetNpcConfig();
 		int NpcConfigId = NpcConfig.ConfigId;
+
+		if(NpcConfig.AIItem)
+		{
+			NpcConfig.AIItem->RefreshConfig(Actor);
+		}
+		
+		
 		if (((NpcConfigId % UpperLimit) / FolderLimit != FolderPrefix) || (NpcConfigId / UpperLimit != SceneId) || NpcConfigMap.Contains(NpcConfigId))
 		{
 			NpcActorsNewly.Add(Actor);
@@ -117,7 +126,7 @@ void AGLevelConfigActor::GenerateNpcConfiguration()
 		UGNpcInfoComponent* InfoComponent = NpcInterface->GetInfoComponent<UGNpcInfoComponent>();
 		InfoComponent->SetConfigId(CurrentValidId);
 		UGNpcFunctions::SetNpcLabel(NpcActor, CurrentValidId, 0);
-		LevelNpcConfig->NpcConfigMap.Add(CurrentValidId, InfoComponent->GetNpcConfig());
+		LevelNpcConfig->NpcConfigMap.Add(CurrentValidId, UGNpcFunctions::DeepCopyNpcConfig(InfoComponent->GetNpcConfig(), LevelNpcConfig));
 	}
 
 	TSet<FName> DeletingFolder;

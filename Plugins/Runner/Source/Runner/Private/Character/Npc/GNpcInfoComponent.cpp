@@ -21,6 +21,7 @@ void UGNpcInfoComponent::InitNpcConfig(const FGNpcConfig& InNpcConfig)
 
 void UGNpcInfoComponent::ApplyNpcConfig()
 {
+	OnNpcConfigApplied.ExecuteIfBound(NpcConfig);
 }
 
 void UGNpcInfoComponent::AcquireNpcConfig()

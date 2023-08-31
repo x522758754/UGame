@@ -127,7 +127,7 @@ bool UPixel2DTDComponent::HandleExistingParallelEvaluationTask(bool bBlockOnTask
 	return false;
 }
 
-UPaperFlipbook * UPixel2DTDComponent::EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose, bool& bLooping) const
+UPaperFlipbook * UPixel2DTDComponent::EvaluateAnimation(const UPixel2DTDComponent* InSkeletalMesh, UPixel2DTDAnimInstance* InAnimInstance, UPaperFlipbook * OutPose, bool& InbLooping) const
 {
-	return InAnimInstance->ParallelEvaluateAnimation(InSkeletalMesh, OutPose, bLooping);
+	return InAnimInstance->ParallelEvaluateAnimation(InSkeletalMesh, OutPose, InbLooping);
 }

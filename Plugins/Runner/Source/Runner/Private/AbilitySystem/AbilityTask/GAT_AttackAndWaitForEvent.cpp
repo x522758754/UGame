@@ -37,8 +37,7 @@ void UGAT_AttackAndWaitForEvent::Activate()
 		if(Hero)
 		{
 			EventHandle = AbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UGAT_AttackAndWaitForEvent::OnGameplayEvent));
-			Hero->isAttacking = true;
-			Hero->AttackType = AttackType;
+			Hero->SetAttackType(AttackType);
 			Hero->GetSprite()->OnFinishedPlaying.AddDynamic(this, &UGAT_AttackAndWaitForEvent::OnFinishedPlaying);
 			if (ShouldBroadcastAbilityTaskDelegates() == false)
 			{
@@ -125,10 +124,9 @@ bool UGAT_AttackAndWaitForEvent::StopPlaying()
 
 	if (AbilitySystemComponent && Ability)
 	{
-		if (/*AbilitySystemComponent->GetAnimatingAbility() == Ability && */Hero->AttackType == AttackType)
+		if (/*AbilitySystemComponent->GetAnimatingAbility() == Ability && */Hero->GetAttackType() == AttackType)
 		{
-			Hero->isAttacking = false;
-			Hero->AttackType = EGAttackType::None;
+			Hero->SetAttackType(EGAttackType::None);
 			Hero->GetSprite()->OnFinishedPlaying.RemoveDynamic(this, &UGAT_AttackAndWaitForEvent::OnFinishedPlaying);
 			return true;
 		}

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/GCharacter.h"
+#include "Character/Data/GNpcData.h"
 #include "GameplayEffectTypes.h"
 #include "GNpcCharacter.generated.h"
 
@@ -23,15 +24,19 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-	FDelegateHandle HealthChangedDelegateHandle;
-
 	// Attribute changed callbacks
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 	// Tag change callbacks
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	void ApplyNpcConfig(const FGNpcConfig& InNpcConfig);
 	
+	void SpawnController();
 protected:
+
+	FDelegateHandle HealthChangedDelegateHandle;
+	FDelegateHandle NpcConfigApplayedDelegateHandle;
 
 	UPROPERTY()
 	UGAbilitySystemComponent* HardRefAbilitySystemComponent;

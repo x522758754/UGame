@@ -119,11 +119,11 @@ FVector AGPlayerCameraManager::GetCameraComponentLocation() const
 {
 	FVector Loc =  GetCameraCachePOV().Location;
 
-	UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CachePOV Location:%s"), *Loc.ToString());
+	//UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CachePOV Location:%s"), *Loc.ToString());
 	if(ActiveCamera.IsValid())
 	{
 		Loc = ActiveCamera->GetCameraComponent()->GetComponentLocation();
-		UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CameraComponent Location:%s"), *Loc.ToString());
+		//UE_LOG(LogTemp, Display, TEXT("AGPlayerCameraManager::GetCameraLocation CameraComponent Location:%s"), *Loc.ToString());
 	}
 	return Loc;
 }

@@ -9,6 +9,7 @@
 #include "Character/Data/GHeroData.h"
 #include "GConfigDataAsset.generated.h"
 
+class UGAIItem;
 /**
  * 
  */
@@ -31,4 +32,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TMap<int32, FGHeroConfig> HeroConfigs;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TMap<TSubclassOf<UGAIItem>, TSoftObjectPtr<UBehaviorTree>> AIConfigs;
 };

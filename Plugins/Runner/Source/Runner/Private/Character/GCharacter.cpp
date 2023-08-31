@@ -13,6 +13,11 @@
 #include "Character/Component/GCharacterMovementComponent.h"
 #include "Character/GCharacterInfoComponent.h"
 
+#include "System/GCommonFunctions.h"
+#include "Pixel2DTDComponent.h"
+
+#include "Kismet/KismetMathLibrary.h"
+
 FName AGCharacter::InfoComponentName(TEXT("InfoComponent"));
 
 // Sets default values
@@ -20,13 +25,22 @@ AGCharacter::AGCharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UGCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	//GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Overlap);
 
 	InfoComponent = CreateDefaultSubobject<UGCharacterInfoComponent>(InfoComponentName);
 	GetCapsuleComponent()->SetHiddenInGame(false);
 	bAlwaysRelevant = true;
+}
+
+void AGCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	isMoving = UKismetMathLibrary::VSize(GetVelocity()) > 0.1f;
+
+	OnMoveUpdate();
 }
 
 void AGCharacter::PossessedBy(AController* NewController)
@@ -301,6 +315,72 @@ void AGCharacter::FinishDying()
 	Destroy();
 }
 
+void AGCharacter::Move(FVector Direction, float Scale)
+{
+	if(Direction.IsNearlyZero())
+	{
+		StopMove();
+		return;
+	}
+	
+	AddMovementInput(Direction, Scale);
+	Direction.Normalize();
+
+	if(FMath::Abs(Direction.X) > FMath::Abs(Direction.Y))
+	{
+		if(Direction.X > 0)
+		{
+			FaceDirection = EGDirection::Right;
+		}
+		else if(Direction.X < 0)
+		{
+			FaceDirection = EGDirection::Left;
+		}
+	}
+	else
+	{
+		if(Direction.Y > 0)
+		{
+			FaceDirection = EGDirection::Down;
+		}
+		else if(Direction.Y < 0)
+		{
+			FaceDirection = EGDirection::UP;
+		}
+	}
+}
+
+void AGCharacter::StopMove()
+{
+	isMoving = false;
+}
+
+FVector AGCharacter::GetDirectionVector()
+{
+	return UGCommonFunctions::GetDirectionVector(FaceDirection);
+}
+
+EGDirection AGCharacter::GetFaceDirection()
+{
+	return FaceDirection;
+}
+
+void AGCharacter::SetFaceDirection(EGDirection Direction)
+{
+	FaceDirection = Direction;
+}
+
+void AGCharacter::SetAttackType(EGAttackType InAttackType)
+{
+	AttackType = InAttackType;
+	isAttacking = EGAttackType::None != AttackType; 
+}
+
+EGAttackType AGCharacter::GetAttackType()
+{
+	return AttackType;
+}
+
 // Called when the game starts or when spawned
 void AGCharacter::BeginPlay()
 {
@@ -394,6 +474,18 @@ void AGCharacter::SetStamina(float Stamina)
 	if (AttributeSetBase.IsValid())
 	{
 		AttributeSetBase->SetStamina(Stamina);
+	}
+}
+
+void AGCharacter::OnMoveUpdate()
+{
+	if(FaceDirection == EGDirection::Right)
+	{
+		GetSprite()->SetWorldRotation(FRotator(0.f, 0.f, -90.f));
+	}
+	else if(FaceDirection == EGDirection::Left)
+	{
+		GetSprite()->SetWorldRotation(FRotator(0.f, 180.f, 90.f));
 	}
 }
 

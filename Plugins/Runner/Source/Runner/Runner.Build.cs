@@ -29,7 +29,8 @@ public class Runner : ModuleRules
 				"Pixel2DTD", 
 				"GameplayAbilities",
 				"GameplayTags",
-				"GameplayTasks"
+				"GameplayTasks", 
+				"ModularGameplay"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

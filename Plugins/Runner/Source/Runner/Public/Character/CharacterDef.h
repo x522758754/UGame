@@ -4,8 +4,9 @@
 #include "CharacterDef.generated.h"
 
 UENUM(BlueprintType)
-enum class EGMoveDirection :uint8
+enum class EGDirection :uint8
 {
+	None,
 	UP,
 	Down,
 	Right,

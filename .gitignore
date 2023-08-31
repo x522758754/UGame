@@ -17,6 +17,16 @@
 *
 !*/
 
+# ignore content
+Content/Geomerty/
+Content/Mannequin/
+Content/TopDownCpp/
+
+# plugin
+Plugins/UnLua/*
+Plugins/UnLuaExtensions/*
+Plugins/UnLuaTestSuite/*
+
 # C/C++ source files
 !*.c
 !*.cc

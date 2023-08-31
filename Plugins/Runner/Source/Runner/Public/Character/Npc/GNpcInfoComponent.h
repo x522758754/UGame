@@ -31,7 +31,10 @@ protected:
 	
 	virtual void RegisterToSubsystem() override;
 	virtual void OnRep_ConfigId() override;
-	
+
+public:
+	DECLARE_DELEGATE_OneParam(FOnNpcConfigApplied, const FGNpcConfig&);
+	FOnNpcConfigApplied OnNpcConfigApplied;
 protected:
 	UPROPERTY(EditAnywhere, Category = "Config", meta = (AllowPrivateAccess = "true"))
 	FGNpcConfig NpcConfig;

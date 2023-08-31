@@ -72,7 +72,7 @@ void UGGA_Archery::EventReceived(FGameplayTag EventTag, FGameplayEventData Event
 		}
 
 		FVector Start = Hero->GetActorLocation();
-		FVector End = Hero->GetActorLocation() + Hero->GetMoveDirection() * Range;
+		FVector End = Hero->GetActorLocation() + Hero->GetDirectionVector() * Range;
 		FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 		
 		FTransform SpawnTransform = Hero->GetActorTransform();

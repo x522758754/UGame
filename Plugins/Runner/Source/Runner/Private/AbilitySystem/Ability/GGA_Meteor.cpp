@@ -46,7 +46,7 @@ void UGGA_Meteor::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 			AGHeroCharacter* Hero = Cast<AGHeroCharacter>(GetAvatarActorFromActorInfo());
 			if (Hero)
 			{
-				LocationInfo.LiteralTransform.SetLocation(Hero->GetMoveDirection() * 200 + LocationInfo.LiteralTransform.GetLocation());
+				LocationInfo.LiteralTransform.SetLocation(Hero->GetDirectionVector() * 200 + LocationInfo.LiteralTransform.GetLocation());
 				TargetActor->StartLocation = MoveTemp(LocationInfo);
 
 

@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "GCommonFunctions.generated.h"
 
+enum class EGDirection : uint8;
 class AGPlayerCameraManager;
 class AGPlayerController;
 class AGHeroCharacter;
@@ -19,9 +20,16 @@ class  UGCommonFunctions : public UBlueprintFunctionLibrary
 public:
 	static UWorld* GetCurWorld();
 
+	UFUNCTION(BlueprintCallable)
 	static AGPlayerController* GetPlayerController();
-
+	UFUNCTION(BlueprintCallable)
+	static AGHeroCharacter* GetHeroCharacter();
+	UFUNCTION(BlueprintCallable)
 	static AGPlayerCameraManager* GetPlayerCameraManager();
+	UFUNCTION(BlueprintCallable)
+	static EGDirection GetDirection(FVector From, FVector To);
+	UFUNCTION(BlueprintCallable)
+	static FVector GetDirectionVector(EGDirection Direction);
 };
 
 

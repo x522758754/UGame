@@ -3,13 +3,21 @@
 
 #include "Character/Npc/GNpcCharacter.h"
 
-#include "Character/Npc/GNpcInfoComponent.h"
-#include "AbilitySystem/GGameplayTags.h"
+#include "AIController.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
+#include "AbilitySystem/GGameplayTags.h"
 #include "AbilitySystem/Attributes/GAttributeSetBase.h"
 
+#include "Character/AI/GAIItem.h"
+#include "Character/Npc/GNpcInfoComponent.h"
+
+#include "Player/GNpcAIController.h"
+
+#include "System/GAssetManager.h"
+
 AGNpcCharacter::AGNpcCharacter(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer.SetDefaultSubobjectClass<UGNpcInfoComponent>(AGCharacter::InfoComponentName))
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UGNpcInfoComponent>(AGCharacter::InfoComponentName))
 {
 	HardRefAbilitySystemComponent = CreateDefaultSubobject<UGAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	HardRefAbilitySystemComponent->SetIsReplicated(true);
@@ -27,6 +35,8 @@ AGNpcCharacter::AGNpcCharacter(const FObjectInitializer& ObjectInitializer)
 
 	// Set our parent's TWeakObjectPtr
 	AttributeSetBase = HardRefAttributeSetBase;
+
+	AutoPossessAI = EAutoPossessAI::Disabled;
 }
 
 void AGNpcCharacter::RefreshNpcConfig()
@@ -41,12 +51,18 @@ void AGNpcCharacter::RefreshNpcConfig()
 void AGNpcCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	// Attribute change callbacks
-	HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).AddUObject(this, &AGNpcCharacter::HealthChanged);
+	HealthChangedDelegateHandle = AbilitySystemComponent->
+	                              GetGameplayAttributeValueChangeDelegate(AttributeSetBase->GetHealthAttribute()).
+	                              AddUObject(this, &AGNpcCharacter::HealthChanged);
 
 	// Tag change callbacks
-	AbilitySystemComponent->RegisterGameplayTagEvent(FGGameplayTags::Get().State_DebuffStun, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &AGNpcCharacter::StunTagChanged);
+	AbilitySystemComponent->RegisterGameplayTagEvent(FGGameplayTags::Get().State_DebuffStun,
+	                                                 EGameplayTagEventType::NewOrRemoved).AddUObject(
+		this, &AGNpcCharacter::StunTagChanged);
+
+	GetInfoComponent<UGNpcInfoComponent>()->OnNpcConfigApplied.BindUObject(this, &AGNpcCharacter::ApplyNpcConfig);
 }
 
 void AGNpcCharacter::HealthChanged(const FOnAttributeChangeData& Data)
@@ -71,5 +87,46 @@ void AGNpcCharacter::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 		AbilityTagsToIgnore.AddTag(FGGameplayTags::Get().Ability_NotCanceledByStun);
 
 		AbilitySystemComponent->CancelAbilities(&AbilityTagsToCancel, &AbilityTagsToIgnore);
+	}
+}
+
+void AGNpcCharacter::ApplyNpcConfig(const FGNpcConfig& InNpcConfig)
+{
+	if(!InNpcConfig.AIItem)
+	{
+		return;
+	}
+	SpawnController();
+
+	//应用行为树
+	if (AGNpcAIController* AIContoller = Cast<AGNpcAIController>(Controller))
+	{
+		AIContoller->NpcAIItem = InNpcConfig.AIItem;
+		if(UBehaviorTree* BehaviorTree = UGAssetManager::LoadAsset(InNpcConfig.AIItem->BehaviorTree))
+		{
+			AIContoller->RunBehaviorTree(BehaviorTree);
+		}
+	}
+}
+
+void AGNpcCharacter::SpawnController()
+{
+	if (Controller != nullptr || !HasAuthority() || AIControllerClass == nullptr)
+	{
+		return;
+	}
+
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnInfo.OverrideLevel = GetLevel();
+	SpawnInfo.ObjectFlags |= RF_Transient; // We never want to save AI controllers into a map
+	AController* NewController = GetWorld()->SpawnActor<AController>(AIControllerClass, GetActorLocation(),
+	                                                                 GetActorRotation(), SpawnInfo);
+	if (NewController != nullptr)
+	{
+		// if successful will result in setting this->Controller 
+		// as part of possession mechanics
+		NewController->Possess(this);
 	}
 }

@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SplineComponent.h"
 #include "GNpcData.generated.h"
 
+class UGAIItem;
 class AGNpcCharacter;
-class UBehaviorTree;
 class UGNpcInfoComponent;
 
 UENUM(BlueprintType)
@@ -32,13 +33,13 @@ struct FGNpcConfig
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ToolTip="是否场景中自动创建"))
 	bool AutoCreate = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ToolTip="客户端Npc"))
-	bool ClientOnly = false;
+	bool ClientOnly = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CreateOnGround = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSoftClassPtr<AGNpcCharacter> NpcClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSoftObjectPtr<UBehaviorTree> BehaviorTree;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced)
+	UGAIItem* AIItem;
 };
 
 USTRUCT(BlueprintType)

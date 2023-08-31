@@ -3,6 +3,8 @@
 
 #include "Character/Npc/GNpcFunctions.h"
 
+#include "Character/AI/GAIItem.h"
+
 #include "System/GAssetManager.h"
 #include "Level/GLevelFunctions.h"
 #include "System/GGameInstance.h"
@@ -13,22 +15,10 @@
 FGNpcConfig UGNpcFunctions::DeepCopyNpcConfig(const FGNpcConfig& NpcConfig, UObject* Outer)
 {
 	FGNpcConfig Result = NpcConfig;
-	// if(NpcConfig.AI_Item)
-	// {
-	// 	Result.AI_Item = Cast<UGNpcAI_Base>(StaticDuplicateObject(NpcConfig.AI_Item, Outer));
-	// }
-	// if(NpcConfig.NpcActorItem)
-	// {
-	// 	Result.NpcActorItem = Cast<UGNpcActorItem>(StaticDuplicateObject(NpcConfig.NpcActorItem, Outer));
-	// }
-	// Result.Interactive.InteractiveItems.Empty();
-	// for(const UGInteractiveItem* InteractiveItem : NpcConfig.Interactive.InteractiveItems)
-	// {
-	// 	if(InteractiveItem)
-	// 	{
-	// 		Result.Interactive.InteractiveItems.Add(Cast<UGInteractiveItem>(StaticDuplicateObject(InteractiveItem, Outer)));
-	// 	}
-	// }
+	if(NpcConfig.AIItem)
+	{
+		Result.AIItem = Cast<UGAIItem>(StaticDuplicateObject(NpcConfig.AIItem, Outer));
+	}
 	
 	return Result;
 }

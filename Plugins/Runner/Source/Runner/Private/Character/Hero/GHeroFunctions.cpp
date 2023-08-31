@@ -28,7 +28,10 @@ AGHeroCharacter* UGHeroFunctions::SpawnHero(int32 ConfigId , const FTransform& T
 	{
 		return nullptr;
 	}
-	AGHeroCharacter* Hero = UGCommonFunctions::GetCurWorld()->SpawnActor<AGHeroCharacter>(HeroClass, Transform);
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
+	AGHeroCharacter* Hero = UGCommonFunctions::GetCurWorld()->SpawnActor<AGHeroCharacter>(HeroClass, Transform, SpawnParameters);
 	if(!Hero)
 	{
 		return nullptr;	

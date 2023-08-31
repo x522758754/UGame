@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Character/GCharacter.h"
-#include "Character/CharacterDef.h"
 #include "GHeroCharacter.generated.h"
 
 
@@ -21,23 +20,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
-
-	void Move(FVector Direction, float Scale = 1.f);
-	void StopMove();
-	FVector GetMoveDirection();
-	virtual void OnMoveUpdate();
-
 protected:
 	void BindAscInput();
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool isMoving = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EGMoveDirection MoveDirection = EGMoveDirection::Right;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool isAttacking = false;
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	EGAttackType AttackType = EGAttackType::None;
 	
 };

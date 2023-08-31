@@ -97,7 +97,7 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 	}
 	else
 	{
-		Character->StopMove();
+		//Character->StopMove();
 	}
 }
 

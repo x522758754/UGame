@@ -3,9 +3,11 @@
 
 #include "Character/Hero/GHeroSubsystem.h"
 
-#include "GEventBasic.h"
-#include "GHeroCharacter.h"
+#include "Character/Hero/GHeroCharacter.h"
 #include "Character/Hero/GHeroInfoComponent.h"
+
+#include "Event/GEventBasic.h"
+
 #include "System/GGameInstance.h"
 
 TWeakObjectPtr<UGHeroSubsystem> UGHeroSubsystem::s_Instance = nullptr;

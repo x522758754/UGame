@@ -104,7 +104,7 @@ bool UGLevelSubsystem::TryPreparePlayer()
 	{
 		if(AGPlayerController* PlayerController = UGCommonFunctions::GetPlayerController())
 		{
-			//PlayerController->Possess(Hero);
+			PlayerController->Possess(Hero);
 		}
 		//设置相机
 	}

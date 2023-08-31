@@ -6,6 +6,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
 #include "Pixel2DTDCharacter.h"
+#include "Character/CharacterDef.h"
 #include "GCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterBaseHitReactDelegate, EGDHitReactDirection, Direction);
@@ -25,6 +26,7 @@ public:
 	AGCharacter(const FObjectInitializer& ObjectInitializer);
 
 public:
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	
@@ -59,8 +61,6 @@ public:
 	/**
 	* Getters for attributes from GDAttributeSetBase
 	**/
-
-	
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetCharacterLevel() const;
@@ -97,7 +97,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void FinishDying();
 	
-public:
+public://Info
 	static FName InfoComponentName;
 	
 	template <class T>
@@ -107,6 +107,22 @@ public:
 		return Cast<T>(InfoComponent);
 	}
 
+public://Move
+	UFUNCTION(BlueprintCallable)
+	void Move(FVector Direction, float Scale = 1.f);
+	UFUNCTION(BlueprintCallable)
+	void StopMove();
+	UFUNCTION(BlueprintCallable)
+	FVector GetDirectionVector();
+	UFUNCTION(BlueprintCallable)
+	EGDirection GetFaceDirection();
+	UFUNCTION(BlueprintCallable)
+	void SetFaceDirection(EGDirection Direction);
+
+public://Attack
+	void SetAttackType(EGAttackType InAttackType);
+	EGAttackType GetAttackType();
+	
 protected:
 
 	virtual void BeginPlay() override;
@@ -120,7 +136,17 @@ protected:
 	virtual void SetMana(float Mana);
 	virtual void SetStamina(float Stamina);
 
-public:
+	virtual void OnMoveUpdate();
+
+protected:
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	bool isMoving = false;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	EGDirection FaceDirection = EGDirection::None;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	bool isAttacking = false;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess = "true"))
+	EGAttackType AttackType = EGAttackType::None;
 
 protected:
 

@@ -5,17 +5,12 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "Pixel2DKit",
+			"Name": "LG",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
-		{
-			"Name": "Pixel2DTopDown",
-			"Enabled": true,
-			"MarketplaceURL": "https://b23.tv/pTrWgqu"
-		},
 		{
 			"Name": "GameplayAbilities",
 			"Enabled": true
