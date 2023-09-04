@@ -105,7 +105,7 @@ void AGLevelConfigActor::GenerateNpcConfiguration()
 			NpcActorsNewly.Add(Actor);
 			continue;
 		}
-		NpcConfigMap.Add(NpcConfigId, NpcConfig);
+		NpcConfigMap.Add(NpcConfigId, UGNpcFunctions::DeepCopyNpcConfig(NpcConfig, LevelNpcConfig));
 		
 		UGNpcFunctions::SetNpcLabel(Actor, NpcConfigId, 0);
 	}

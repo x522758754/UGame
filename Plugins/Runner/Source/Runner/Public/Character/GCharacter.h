@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
 #include "GameplayTagContainer.h"
+#include "PaperCharacter.h"
 #include "Pixel2DTDCharacter.h"
 #include "Character/CharacterDef.h"
 #include "GCharacter.generated.h"

@@ -2,9 +2,7 @@
 
 
 #include "Character/AI/GAIItem.h"
-
 #include "Config/GConfigDataAsset.h"
-
 #include "Player/GNpcAIController.h"
 
 void UGAIItem::RefreshConfig(AActor* NpcActor)
@@ -23,5 +21,5 @@ void UGAIItem::SetNpcAIController(AGNpcAIController* Controller)
 
 AGNpcAIController* UGAIItem::GetNpcAIController() const
 {
-	return NpcAIController;
+	return NpcAIController.Get();
 }

@@ -7,9 +7,11 @@
 #include "GAIItem.generated.h"
 
 
-UCLASS(BlueprintType)
+UCLASS(EditInlineNew,BlueprintType)
 class UGAIItem : public UObject
 {
+	friend class AGNpcAIController;
+	
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="AI")
@@ -22,11 +24,12 @@ public:
 	virtual bool IsValid() { return true; }
 	virtual bool IgnoreBehaviorTree() {return false;}
 protected:
+	virtual void Init(AActor* NpcActor) {};
 	virtual void SetNpcAIController(AGNpcAIController* Controller);
 	virtual void Tick(float DeltaSeconds){}
 public:
 	UFUNCTION()
 	AGNpcAIController* GetNpcAIController() const;
 protected:
-	AGNpcAIController* NpcAIController;
+	TWeakObjectPtr<AGNpcAIController> NpcAIController;
 };

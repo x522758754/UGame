@@ -10,6 +10,7 @@
 #include "GConfigDataAsset.generated.h"
 
 class UGAIItem;
+class UBehaviorTree;
 /**
  * 
  */

@@ -26,7 +26,8 @@ public class Runner : ModuleRules
 			new string[]
 			{
 				"Core", 
-				"Pixel2DTD", 
+				"Pixel2DTD",
+				"Paper2D",
 				"GameplayAbilities",
 				"GameplayTags",
 				"GameplayTasks", 
@@ -47,6 +48,7 @@ public class Runner : ModuleRules
 				"DeveloperSettings", 
 				"UMG",
 				"InputCore",
+				"NavigationSystem",
 				"Paper2D"
 				// ... add private dependencies that you statically link with here ...	
 			}

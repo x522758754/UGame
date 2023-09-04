@@ -36,7 +36,7 @@ struct FGNpcConfig
 	bool ClientOnly = true;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool CreateOnGround = true;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TSoftClassPtr<AGNpcCharacter> NpcClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced)
 	UGAIItem* AIItem;

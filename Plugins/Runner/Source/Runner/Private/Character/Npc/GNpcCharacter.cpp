@@ -101,7 +101,6 @@ void AGNpcCharacter::ApplyNpcConfig(const FGNpcConfig& InNpcConfig)
 	//应用行为树
 	if (AGNpcAIController* AIContoller = Cast<AGNpcAIController>(Controller))
 	{
-		AIContoller->NpcAIItem = InNpcConfig.AIItem;
 		if(UBehaviorTree* BehaviorTree = UGAssetManager::LoadAsset(InNpcConfig.AIItem->BehaviorTree))
 		{
 			AIContoller->RunBehaviorTree(BehaviorTree);
