@@ -14,9 +14,9 @@ AGRouter::AGRouter()
 
 	bReplicates = true;
 
-	SplineComponent = CreateDefaultSubobject<USplineComponent>(FName("SplineComponent"));
-
-	RootComponent = SplineComponent.Get();
+	USceneComponent* SceneComponent = CreateDefaultSubobject<USceneComponent>(FName("SceneComponent"));
+	SceneComponent->SetVisibility(false, false);
+	SetRootComponent(SceneComponent);
 }
 
 USplineComponent* AGRouter::GetSplineComponent() const

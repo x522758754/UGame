@@ -3,6 +3,8 @@
 
 #include "Level/GLevelSubsystem.h"
 
+#include "Actor/Router/GRouter.h"
+
 #include "Config/GGameConfigSettings.h"
 #include "Character/Hero/GHeroFunctions.h"
 #include "Character/Hero/GHeroCharacter.h"
@@ -55,6 +57,18 @@ void UGLevelSubsystem::ChangeLevel(int32 LevelId)
 UGLevelNpcConfigAsset* UGLevelSubsystem::GetCurrentLevelNpcConfigAsset() const
 {
 	return CurrentLevelNpcConfigAsset;
+}
+
+AActor* UGLevelSubsystem::GetRouterActor()
+{
+	if(!RouterActor.IsValid())
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Name = TEXT("RouterActor");
+		RouterActor = GetWorld()->SpawnActor<AGRouter>(SpawnParameters);
+	}
+
+	return RouterActor.Get();
 }
 
 bool UGLevelSubsystem::TryInitLevel()

@@ -36,6 +36,8 @@ public:
 	void ChangeLevel(int32 LevelId);
 	UGLevelNpcConfigAsset* GetCurrentLevelNpcConfigAsset() const;
 
+	AActor* GetRouterActor();
+
 	bool TryInitLevel();
 	bool TryPreparePlayer();
 protected:
@@ -55,6 +57,9 @@ private:
 	UGLevelNpcConfigAsset* CurrentLevelNpcConfigAsset;
 	UPROPERTY(Transient)
 	TWeakObjectPtr<AGLevelActor> LevelActor;
+
+	UPROPERTY(Transient)
+	TWeakObjectPtr<AActor> RouterActor;
 
 	//Loading
 	TSharedPtr<FGLevelLoadingBase> CurrentLoading;

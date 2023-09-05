@@ -1,17 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/AI/Item/GAIPatrolAlongSpline.h"
+#include "Character/AI/Item/GAIPatrolMoveToPlayer.h"
 
 #include "Actor/Router/GRouter.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
-
-#include "Level/GLevelSubsystem.h"
-
 #include "Player/GNpcAIController.h"
 
-void UGAIPatrolAlongSpline::RefreshConfig(AActor* NpcActor)
+void UGAIPatrolMoveToPlayer::RefreshConfig(AActor* NpcActor)
 {
 #if WITH_EDITOR
 	Super::RefreshConfig(NpcActor);
@@ -27,12 +24,12 @@ void UGAIPatrolAlongSpline::RefreshConfig(AActor* NpcActor)
 #endif
 }
 
-bool UGAIPatrolAlongSpline::IgnoreBehaviorTree()
+bool UGAIPatrolMoveToPlayer::IgnoreBehaviorTree()
 {
 	return PatrolParam.IsValid;
 }
 
-void UGAIPatrolAlongSpline::Init(AActor* NpcActor)
+void UGAIPatrolMoveToPlayer::Init(AActor* NpcActor)
 {
 	MakeSplineComponent(NpcActor);
 
@@ -42,12 +39,12 @@ void UGAIPatrolAlongSpline::Init(AActor* NpcActor)
 	}
 }
 
-void UGAIPatrolAlongSpline::SetNpcAIController(AGNpcAIController* Controller)
+void UGAIPatrolMoveToPlayer::SetNpcAIController(AGNpcAIController* Controller)
 {
 	Super::SetNpcAIController(Controller);
 }
 
-void UGAIPatrolAlongSpline::Tick(float DeltaSeconds)
+void UGAIPatrolMoveToPlayer::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -61,7 +58,7 @@ void UGAIPatrolAlongSpline::Tick(float DeltaSeconds)
 	}
 }
 
-USplineComponent* UGAIPatrolAlongSpline::MakeSplineComponent(AActor* NpcActor)
+USplineComponent* UGAIPatrolMoveToPlayer::MakeSplineComponent(AActor* NpcActor)
 {
 	if(!NpcActor)
 	{
@@ -73,43 +70,36 @@ USplineComponent* UGAIPatrolAlongSpline::MakeSplineComponent(AActor* NpcActor)
 		return nullptr;
 	}
 
-	AActor* RouterActor = UGLevelSubsystem::Get()->GetRouterActor();
+	AGRouter* RouterActor = GetWorld()->SpawnActor<AGRouter>(AGRouter::StaticClass(), PatrolParam.Transform);
 	if(!RouterActor)
 	{
 		return nullptr;
 	}
 	
-	USplineComponent* SplineComponent = NewObject<USplineComponent>(RouterActor, "SplineComponent");
-	SplineComponent->SetWorldTransform(PatrolParam.Transform);
-	SplineComponent->AttachToComponent(RouterActor->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
-	SplineComponent->RegisterComponent();
-	RouterActor->AddInstanceComponent(SplineComponent);
-	SplineComponent->SetMobility(EComponentMobility::Static);
-	
-	SplineComponent->SplineCurves = PatrolParam.SplineCurves;
-	SplineComponent->UpdateSpline();
+	RouterActor->GetSplineComponent()->SplineCurves = PatrolParam.SplineCurves;
+	RouterActor->GetSplineComponent()->UpdateSpline();
 
-	SplineComponentPtr = SplineComponent;
+	SplineComponentPtr = RouterActor->GetSplineComponent();
 	
-	return SplineComponent;
+	return RouterActor->GetSplineComponent();
 }
 
-void UGAIPatrolAlongSpline::UseCustomMove()
+void UGAIPatrolMoveToPlayer::UseCustomMove()
 {
 	if(!SplineComponentPtr.IsValid() || !NpcAIController.IsValid())
 	{
 		return;
 	}
-	NpcAIController->GetPathFinished().BindUObject(this, &UGAIPatrolAlongSpline::OnPathFollowArrived);
+	NpcAIController->GetPathFinished().BindUObject(this, &UGAIPatrolMoveToPlayer::OnPathFollowArrived);
 
 	PatrolToTarget();
 }
 
-void UGAIPatrolAlongSpline::OnSegmentFinished(int CurrentPathIndex)
+void UGAIPatrolMoveToPlayer::OnSegmentFinished(int CurrentPathIndex)
 {
 }
 
-void UGAIPatrolAlongSpline::OnPathFollowArrived(const FPathFollowingResult& Result)
+void UGAIPatrolMoveToPlayer::OnPathFollowArrived(const FPathFollowingResult& Result)
 {
 	if(!SplineComponentPtr.IsValid() || !NpcAIController.IsValid())
 	{
@@ -128,11 +118,11 @@ void UGAIPatrolAlongSpline::OnPathFollowArrived(const FPathFollowingResult& Resu
 	}
 }
 
-void UGAIPatrolAlongSpline::OnResumePathFollow()
+void UGAIPatrolMoveToPlayer::OnResumePathFollow()
 {
 }
 
-void UGAIPatrolAlongSpline::PatrolToTarget()
+void UGAIPatrolMoveToPlayer::PatrolToTarget()
 {
 	TargetPoint = SplineComponentPtr->GetLocationAtDistanceAlongSpline(TargetSplineDistance, ESplineCoordinateSpace::World);
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(NpcAIController.Get(), TargetPoint);
