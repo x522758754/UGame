@@ -34,7 +34,8 @@ protected:
 public:
 	int32 GetOpenLevelId() const;
 	void ChangeLevel(int32 LevelId);
-	UGLevelNpcConfigAsset* GetCurrentLevelNpcConfigAsset() const;
+	const FGLevelConfig* GetCurrentLevelConfig() const;
+	const UGLevelNpcConfigAsset* GetCurrentLevelNpcConfigAsset() const;
 
 	AActor* GetRouterActor();
 

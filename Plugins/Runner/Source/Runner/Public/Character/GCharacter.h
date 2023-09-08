@@ -137,6 +137,7 @@ protected:
 	virtual void SetMana(float Mana);
 	virtual void SetStamina(float Stamina);
 
+	virtual void InitMoveAttr();
 	virtual void OnMoveUpdate();
 
 protected:

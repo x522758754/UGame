@@ -3,9 +3,13 @@
 
 #include "Kismet/GameplayStatics.h"
 
+#include "Level/GLevelSubsystem.h"
+#include "Level/Data/GLevelData.h"
+
 #include "SaveGame/GClientSaveGame.h"
 #include "SaveGame/GSaveGameSubsystem.h"
 
+#include "System/GAssetManager.h"
 #include "System/GGameInstance.h"
 
 #define G_VolumeMultiplier_MinValue 0.0002f
@@ -22,7 +26,17 @@ UGSoundSubsystem* UGSoundSubsystem::Get()
 
 void UGSoundSubsystem::OnGameInstanceInit()
 {
-	
+	const TFunction<void(int32)> ObserverLevelLoadEnd = [this](int32 LevelId)
+	{
+		if(const FGLevelConfig* LevelConfig = UGLevelSubsystem::Get()->GetCurrentLevelConfig())
+		{
+			if(USoundBase* SoundBase = UGAssetManager::LoadAsset(LevelConfig->SoundAsset))
+			{
+				PlayMusic(SoundBase, true, 0.f, 0.2f, 0.2f);	
+			}
+		}
+	};
+	EventObserverHolder.Observe(EGEventType::LevelLoadEnd, ObserverLevelLoadEnd);
 }
 
 void UGSoundSubsystem::OnTick(float DeltaTime)
@@ -52,9 +66,47 @@ void UGSoundSubsystem::OnTick(float DeltaTime)
 	}
 }
 
-void UGSoundSubsystem::PlayMusic()
+void UGSoundSubsystem::PlayMusic(USoundBase* Sound, bool bLoop, float StartTime, float FadeInTime, float FadeOutTime)
 {
-	//UGameplayStatics::SpawnSound2D(GetWorld(), Music);
+	if(Sound)
+	{
+		if(USoundWave* SoundWave = Cast<USoundWave>(Sound))
+		{
+			SoundWave->bLooping = bLoop;	
+		}
+		if(!MusicAudioComponent.IsValid())
+		{
+			MusicAudioComponent = UGameplayStatics::SpawnSound2D(GetWorld(), Sound);
+		}
+		else
+		{
+			// todo
+			// if(FadeOutTime > 0.f)
+			// {
+			// 	MusicAudioComponent->FadeOut(FadeOutTime, GetMusicVolumeMultiplier());
+			// }
+			// else
+			{
+				MusicAudioComponent->Stop();
+			}
+		}
+		if(MusicAudioComponent.IsValid())
+		{
+			MusicAudioComponent->SetSound(Sound);
+			MusicAudioComponent->SetAutoActivate(false);
+			
+			if(FadeInTime > 0.f)
+			{
+				MusicAudioComponent->FadeIn(FadeInTime, GetMusicVolumeMultiplier(), StartTime);
+			}
+			else
+			{
+				MusicAudioComponent->Play(StartTime);
+				MusicAudioComponent->SetVolumeMultiplier(GetMusicVolumeMultiplier());
+			}
+		}
+		
+	}
 }
 
 AActor* UGSoundSubsystem::GetAudioActor()
@@ -216,6 +268,10 @@ void UGSoundSubsystem::UpdateVolumeMultiplier()
 	}
 	
 	const float MusicVolume = GetMusicVolumeMultiplier();
+	if(MusicAudioComponent.IsValid())
+	{
+		MusicAudioComponent->SetVolumeMultiplier(MusicVolume);
+	}
 }
 
 void UGSoundSubsystem::ReadSoundDataFromLocal()

@@ -17,6 +17,8 @@ void UGAIItem::RefreshConfig(AActor* NpcActor)
 void UGAIItem::SetNpcAIController(AGNpcAIController* Controller)
 {
 	NpcAIController = Controller;
+
+	
 }
 
 AGNpcAIController* UGAIItem::GetNpcAIController() const

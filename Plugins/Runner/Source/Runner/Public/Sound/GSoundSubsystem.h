@@ -4,6 +4,9 @@
 #include "Sound/GSoundDef.h"
 
 #include "Components/AudioComponent.h"
+
+#include "Event/GEventObserverHolder.h"
+
 #include "System/GGameInstanceSubsystem.h"
 
 #include "GSoundSubsystem.generated.h"
@@ -55,12 +58,12 @@ public:
 	virtual void OnGameInstanceInit() override;
 	
 protected:
-	virtual bool ShouldCreateSubsystem(UObject* Outer) const override {return  false;}
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override {return  true;}
 	virtual void OnTick(float DeltaTime) override;
 
 public:
 	//bg music
-	void PlayMusic();
+	void PlayMusic(USoundBase* Sound, bool bLoop = false, float StartTime = 0.f, float FadeInTime = 0.f, float FadeOutTime = 0.f);
 
 public:
 	//场景音乐音效
@@ -99,6 +102,7 @@ public:
 	float GetAudioVolumeMultiplier();
 
 private:
+	TWeakObjectPtr<UAudioComponent> MusicAudioComponent;
 	//场景音乐音效
 	AActor* GetAudioActor();
 	UAudioComponent* GetValidAudioComponent();
@@ -118,4 +122,6 @@ private:
 	UPROPERTY()
 	TArray<UAudioComponent*> AudioComponentPool;
 	int CurrentAudioGuid = 0;
+
+	FGEventObserverHolder EventObserverHolder;
 };

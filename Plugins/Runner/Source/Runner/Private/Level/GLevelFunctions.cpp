@@ -56,7 +56,7 @@ bool UGLevelFunctions::FitLocation(FVector& Location, float CapsuleHalfHeight, U
 
 const FGNpcConfig* UGLevelFunctions::GetNpcConfig(int NpcConfigId)
 {
-	if(UGLevelNpcConfigAsset* LevelNpcConfigAsset = UGLevelSubsystem::Get()->GetCurrentLevelNpcConfigAsset())
+	if(const UGLevelNpcConfigAsset* LevelNpcConfigAsset = UGLevelSubsystem::Get()->GetCurrentLevelNpcConfigAsset())
 	{
 		if(LevelNpcConfigAsset->NpcConfigMap.Contains(NpcConfigId))
 		{

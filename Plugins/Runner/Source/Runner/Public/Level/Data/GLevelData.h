@@ -32,6 +32,9 @@ struct RUNNER_API FGLevelConfig
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSoftClassPtr<AGLevelActor> LevelActorClassPath;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<USoundBase> SoundAsset;
+
 public:
 	FString GetMapName() const;
 

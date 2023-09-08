@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Camera/GCameraDef.h"
+
+#include "Character/Data/GCharacterData.h"
+
 #include "Engine/DeveloperSettings.h"
 #include "Config/GConfigDataAsset.h"
 #include "GGameConfigSettings.generated.h"
@@ -54,4 +57,7 @@ public:
 
 	UPROPERTY(config, noclear, EditAnywhere)
 	float ClientNpcDisappearDistance = 2000;
+
+	UPROPERTY(config, noclear, EditAnywhere)
+	FGCharacterCommonMoveAttr CharacterMoveAttr;
 };

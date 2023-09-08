@@ -16,6 +16,8 @@
 #include "System/GCommonFunctions.h"
 #include "Pixel2DTDComponent.h"
 
+#include "Config/GGameConfigSettings.h"
+
 #include "Kismet/KismetMathLibrary.h"
 
 FName AGCharacter::InfoComponentName(TEXT("InfoComponent"));
@@ -385,6 +387,8 @@ EGAttackType AGCharacter::GetAttackType()
 void AGCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InitMoveAttr();
 }
 
 void AGCharacter::AddCharacterAbilities()
@@ -475,6 +479,12 @@ void AGCharacter::SetStamina(float Stamina)
 	{
 		AttributeSetBase->SetStamina(Stamina);
 	}
+}
+
+void AGCharacter::InitMoveAttr()
+{
+	const FGCharacterCommonMoveAttr& CharacterMoveAttr = UGGameConfigSettings::Get()->CharacterMoveAttr;
+	GetCharacterMovement()->MaxStepHeight = CharacterMoveAttr.MaxStepHeight;
 }
 
 void AGCharacter::OnMoveUpdate()

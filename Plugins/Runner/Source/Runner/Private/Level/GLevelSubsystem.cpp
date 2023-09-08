@@ -54,7 +54,12 @@ void UGLevelSubsystem::ChangeLevel(int32 LevelId)
 	}
 }
 
-UGLevelNpcConfigAsset* UGLevelSubsystem::GetCurrentLevelNpcConfigAsset() const
+const FGLevelConfig* UGLevelSubsystem::GetCurrentLevelConfig() const
+{
+	return CurrentLevelConfig;
+}
+
+const UGLevelNpcConfigAsset* UGLevelSubsystem::GetCurrentLevelNpcConfigAsset() const
 {
 	return CurrentLevelNpcConfigAsset;
 }
@@ -185,11 +190,10 @@ void UGLevelSubsystem::OnMapLoadComplete(int32 LevelId, const float LoadTime, co
 			CurrentLoading->OnMapLoaded();
 		}
 	}
-	if(UGConfigDataAsset::Get()->LevelConfigs.Contains(LevelId))
+	if(FGLevelConfig* LevelConfig = UGConfigDataAsset::Get()->LevelConfigs.Find(LevelId))
 	{
-		const FGLevelConfig& Cfg = UGConfigDataAsset::Get()->LevelConfigs[LevelId];
-		CurrentLevelNpcConfigAsset = UGAssetManager::LoadAsset(Cfg.NpcConfigAsset);
-		CurrentLevelConfig = &Cfg;
+		CurrentLevelNpcConfigAsset = UGAssetManager::LoadAsset(LevelConfig->NpcConfigAsset);
+		CurrentLevelConfig = LevelConfig;
 	}
 }
 
@@ -198,5 +202,5 @@ void UGLevelSubsystem::OnMapLoadComplete(int32 LevelId, const float LoadTime, co
 void UGLevelSubsystem::OnLevelLoaded()
 {
 	UE_LOG(LogTemp, Display, TEXT("UGLevelSubsystem::OnLevelLoaded"));
-	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadEnd);
+	UGEventBasicFunctions::Dispatch(EGEventType::LevelLoadEnd, OpenLevelId);
 }

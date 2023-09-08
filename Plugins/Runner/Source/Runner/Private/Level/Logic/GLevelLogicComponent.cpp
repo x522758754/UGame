@@ -66,7 +66,7 @@ void UGLevelLogicComponent::ProcessNeedSpawnActor()
 
 void UGLevelLogicComponent::ProcessSpawnNpc()
 {
-	UGLevelNpcConfigAsset* SceneNpcConfig = UGLevelSubsystem::Get()->GetCurrentLevelNpcConfigAsset();
+	const UGLevelNpcConfigAsset* SceneNpcConfig = UGLevelSubsystem::Get()->GetCurrentLevelNpcConfigAsset();
 	if(!SceneNpcConfig)
 	{
 		return;

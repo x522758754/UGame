@@ -12,7 +12,7 @@ struct FPathFollowingResult;
 
 
 USTRUCT(BlueprintType)
-struct FGNpcPatrolParam
+struct FGPatrolSplineParam
 {
 	GENERATED_BODY()
 
@@ -38,8 +38,8 @@ class UGAIPatrolAlongSpline : public UGAIItem
 	GENERATED_BODY()
 
 public:
-	virtual void RefreshConfig(AActor* NpcActor);
-	virtual bool IgnoreBehaviorTree();
+	virtual void RefreshConfig(AActor* NpcActor) override;
+	virtual bool IgnoreBehaviorTree() override;
 protected:
 	virtual void Init(AActor* NpcActor) override;
 	virtual void SetNpcAIController(AGNpcAIController* Controller) override;
@@ -56,7 +56,7 @@ protected:
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGNpcPatrolParam PatrolParam;
+	FGPatrolSplineParam PatrolParam;
 
 	TWeakObjectPtr<USplineComponent> SplineComponentPtr;
 

@@ -23,7 +23,7 @@ struct FGSoundData
 	UPROPERTY(EditAnywhere)
 	bool bPlayAudio;				//是否播放音效
 
-	void CleanUp()
+	FGSoundData()
 	{
 		BasicVolumeRate = 1.0f;
 		MusicVolumeRate = 1.0f;
