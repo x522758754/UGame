@@ -14,8 +14,6 @@
 #
 
 # Ignore all files by default, but scan all directories
-*
-!*/
 
 # ignore content
 Content/Geomerty/
