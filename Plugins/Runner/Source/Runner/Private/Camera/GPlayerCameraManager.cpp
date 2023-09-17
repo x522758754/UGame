@@ -50,6 +50,7 @@ void AGPlayerCameraManager::Tick(float DeltaSeconds)
 	TickParam(DeltaSeconds);
 }
 
+#if WITH_EDITOR
 void AGPlayerCameraManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
@@ -72,6 +73,7 @@ void AGPlayerCameraManager::PostEditChangeProperty(FPropertyChangedEvent& Proper
 	}
 	
 }
+#endif
 
 void AGPlayerCameraManager::SetFollow(AActor* Target, FName SocketName, float FollowSpeed)
 {

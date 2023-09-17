@@ -41,6 +41,9 @@ public:
 
 	bool TryInitLevel();
 	bool TryPreparePlayer();
+
+	void NavigateToGoal();
+	
 protected:
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnGameInstanceInit() override;

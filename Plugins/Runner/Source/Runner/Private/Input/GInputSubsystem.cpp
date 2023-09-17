@@ -8,87 +8,6 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Framework/Application/SlateUser.h"
 
-TWeakObjectPtr<UGInputSubsystem> UGInputSubsystem::s_Instance;
-UGInputSubsystem* UGInputSubsystem::Get()
-{
-	if(s_Instance == nullptr)
-	{
-		s_Instance = UGGameInstance::Get()->GetSubsystem<UGInputSubsystem>();
-	}
-	return s_Instance.Get();
-}
-
-void UGInputSubsystem::OnGameInstanceInit()
-{
-	RegisterInputPreProcessor();
-}
-
-void UGInputSubsystem::Deinitialize()
-{
-	if (FSlateApplication::IsInitialized() && InputProcessor.IsValid())
-	{
-		FSlateApplication::Get().UnregisterInputPreProcessor(InputProcessor);
-	}
-}
-
-void UGInputSubsystem::RegisterInputPreProcessor()
-{
-	InputProcessor = MakeShared<FGInputProcessor>();
-	InputProcessor->Owner = this;
-	if (FSlateApplication::IsInitialized())
-	{
-		FSlateApplication::Get().RegisterInputPreProcessor(InputProcessor);
-	}
-}
-
-void UGInputSubsystem::ObserveMouseButtonDown(const FString& Name)
-{
-	if(InputProcessor.IsValid())
-	{
-		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::ListenMouseButtonDown %s"), *Name);
-		InputProcessor->MouseButtonDownEventObserverCount += 1;
-	}
-}
-
-void UGInputSubsystem::ObserveMouseButtonUp(const FString& Name)
-{
-	if(InputProcessor.IsValid())
-	{
-		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::ListenMouseButtonUp %s"), *Name);
-		InputProcessor->MouseButtonUpEventObserverCount += 1;
-	}
-}
-
-void UGInputSubsystem::UnObserveMouseButtonDown(const FString& Name)
-{
-	if(InputProcessor.IsValid())
-	{
-		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::UnObserveMouseButtonDown %s"), *Name);
-		if(InputProcessor->MouseButtonDownEventObserverCount == 0)
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGInputSubsystem::UnObserveMouseButtonDown Error %s"), *Name);
-			return;
-		}
-		InputProcessor->MouseButtonDownEventObserverCount -= 1;
-	}
-}
-
-void UGInputSubsystem::UnObserveMouseButtonUp(const FString& Name)
-{
-	if(InputProcessor.IsValid())
-	{
-		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::UnObserveMouseButtonDown %s"), *Name);
-		if(InputProcessor->MouseButtonUpEventObserverCount == 0)
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGInputSubsystem::UnObserveMouseButtonDown Error %s"), *Name);
-			return;
-		}
-		InputProcessor->MouseButtonUpEventObserverCount -= 1;
-	}
-}
-
-
-//----------------------------------------------------------------------------------------------------------------------
 
 bool FGInputProcessor::HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& MouseEvent)
 {
@@ -118,6 +37,8 @@ bool FGInputProcessor::HandleMouseButtonUpEvent(FSlateApplication& SlateApp, con
 		return false;
 	}
 	//UGEventSubsystem::Get()->DispatchEvent(EGEventDefine::GlobalMouseButtonUp, Position);
+
+	//不吞掉输入 【点击按钮还是响应按钮事件,PlayerInput】
 	return false;
 }
 
@@ -181,4 +102,86 @@ bool FGInputProcessor::HandleKeyUpEvent(FSlateApplication& SlateApp, const FKeyE
 		PC->HandleKeyUpEvent(InKeyEvent);
 	}	
 	return false;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+
+TWeakObjectPtr<UGInputSubsystem> UGInputSubsystem::s_Instance;
+UGInputSubsystem* UGInputSubsystem::Get()
+{
+	if(s_Instance == nullptr)
+	{
+		s_Instance = UGGameInstance::Get()->GetSubsystem<UGInputSubsystem>();
+	}
+	return s_Instance.Get();
+}
+
+void UGInputSubsystem::OnGameInstanceInit()
+{
+	RegisterInputPreProcessor();
+}
+
+void UGInputSubsystem::Deinitialize()
+{
+	if (FSlateApplication::IsInitialized() && InputProcessor.IsValid())
+	{
+		FSlateApplication::Get().UnregisterInputPreProcessor(InputProcessor);
+	}
+}
+
+void UGInputSubsystem::RegisterInputPreProcessor()
+{
+	//优先级高于 Viewport
+	InputProcessor = MakeShared<FGInputProcessor>();
+	InputProcessor->Owner = this;
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().RegisterInputPreProcessor(InputProcessor);
+	}
+}
+
+void UGInputSubsystem::ObserveMouseButtonDown(const FString& Name)
+{
+	if(InputProcessor.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::ListenMouseButtonDown %s"), *Name);
+		InputProcessor->MouseButtonDownEventObserverCount += 1;
+	}
+}
+
+void UGInputSubsystem::ObserveMouseButtonUp(const FString& Name)
+{
+	if(InputProcessor.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::ListenMouseButtonUp %s"), *Name);
+		InputProcessor->MouseButtonUpEventObserverCount += 1;
+	}
+}
+
+void UGInputSubsystem::UnObserveMouseButtonDown(const FString& Name)
+{
+	if(InputProcessor.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::UnObserveMouseButtonDown %s"), *Name);
+		if(InputProcessor->MouseButtonDownEventObserverCount == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGInputSubsystem::UnObserveMouseButtonDown Error %s"), *Name);
+			return;
+		}
+		InputProcessor->MouseButtonDownEventObserverCount -= 1;
+	}
+}
+
+void UGInputSubsystem::UnObserveMouseButtonUp(const FString& Name)
+{
+	if(InputProcessor.IsValid())
+	{
+		UE_LOG(LogTemp, Log, TEXT("UGInputSubsystem::UnObserveMouseButtonDown %s"), *Name);
+		if(InputProcessor->MouseButtonUpEventObserverCount == 0)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGInputSubsystem::UnObserveMouseButtonDown Error %s"), *Name);
+			return;
+		}
+		InputProcessor->MouseButtonUpEventObserverCount -= 1;
+	}
 }

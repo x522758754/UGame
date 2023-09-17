@@ -8,33 +8,22 @@
 #include "Character/Hero/GHeroCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
+
+#include "Level/GLevelFunctions.h"
+#include "Level/GLevelSubsystem.h"
+
+#include "Navigate/GNavigateFunctions.h"
+
 #include "Player/GPlayerController.h"
 
 UGPlayerMovementInput::UGPlayerMovementInput()
 {
-	m_fGamePadInputAxis_X = 0.0f;
-	m_fGamePadInputAxis_Y = 0.0f;
 }
 
 bool UGPlayerMovementInput::OnTick(float DeltaTime)
 {
 	TickMovement(DeltaTime);
 	return false;
-}
-
-float UGPlayerMovementInput::GetJoyInputAngle()
-{
-	return atan2(m_fGamePadInputAxis_Y, m_fGamePadInputAxis_X) * 180 / PI;
-}
-
-bool UGPlayerMovementInput::ShowJoyDirection()
-{
-	return FMath::Abs(m_fGamePadInputAxis_X) < 0.01f && FMath::Abs(m_fGamePadInputAxis_Y) < 0.01f;
-}
-
-void UGPlayerMovementInput::IgnoreJump(bool Ignore)
-{
-	IgnorePlayerJump = Ignore;
 }
 
 void UGPlayerMovementInput::TickMovement(float DeltaTime)
@@ -61,12 +50,6 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 		{
 			return;
 		}
-		// FRotator Rotation = CameraManager->GetCameraRotation();
-		//
-		// if(!Character || Character->GetCharacterMovement()->MovementMode != EMovementMode::MOVE_Flying)
-		// {
-		// 	Rotation = FRotator(0, Rotation.Yaw, 0);
-		// }
 		const FVector Foward = FVector(0, -1, 0);
 		const FVector Right = FVector(1, 0, 0);
 		FVector Direction = FVector::ZeroVector;
@@ -87,7 +70,6 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 			Direction += Right;
 		}
 		
-		// FVector JoyMoceDir = m_fGamePadInputAxis_X * Right + m_fGamePadInputAxis_Y * Foward;
 		FVector JoyMoveDir = joyOffset.X * Right + joyOffset.Y * Foward;
 		JoyMoveDir.Normalize();
 		Direction += JoyMoveDir;
@@ -95,23 +77,15 @@ void UGPlayerMovementInput::TickMovement(float DeltaTime)
 
 		//UGEventBasicFunctions::Dispatch(EGEventType::PlayerMovement, Direction);
 	}
-	else
-	{
-		//Character->StopMove();
-	}
 }
 
 
 bool UGPlayerMovementInput::OnInputKey_Implementation(FKey Key, EInputEvent EventType, float AmountDepressed, bool bGamepad)
 {
-	auto PC = UGCommonFunctions::GetPlayerController();
+ 	auto PC = UGCommonFunctions::GetPlayerController();
 	if(!PC)
 	{
 		return false;	
-	}
-	if (MoveDirection == 0 && (FMath::Abs(m_fGamePadInputAxis_X) > 0.01f || FMath::Abs(m_fGamePadInputAxis_Y) > 0.01f) && Key != EKeys::SpaceBar)
-	{
-		return false;
 	}
 	switch (EventType)
 	{
@@ -135,16 +109,10 @@ bool UGPlayerMovementInput::OnInputKey_Implementation(FKey Key, EInputEvent Even
 		}
 		else if (Key == EKeys::SpaceBar)
 		{
- 			if(IgnorePlayerJump)
+			if(!UGNavigateFunctions::IsNavigating())
 			{
-				return false;
+				UGLevelSubsystem::Get()->NavigateToGoal();
 			}
-			if (ACharacter* Character = PC->GetPawn<ACharacter>())
-			{
-				//Character->Jump();
-			}
-			
-
 		}
 		if(MoveDirection > 0)
 		{
@@ -172,10 +140,9 @@ bool UGPlayerMovementInput::OnInputKey_Implementation(FKey Key, EInputEvent Even
 		}
 		else if (Key == EKeys::SpaceBar)
 		{
-			ACharacter* Character = PC->GetPawn<ACharacter>();
-			if (Character)
+			if(UGNavigateFunctions::IsNavigating())
 			{
-				Character->StopJumping();
+				UGNavigateFunctions::AbortMove();
 			}
 		}
 	}
@@ -189,22 +156,6 @@ bool UGPlayerMovementInput::OnInputKey_Implementation(FKey Key, EInputEvent Even
 
 bool UGPlayerMovementInput::OnInputAxis_Implementation(FKey Key, float Delta, float DeltaTime, int32 NumSamples, bool bGamepad)
 {
-	// if (MoveDirectin != 0 && (FMath::Abs(m_fGamePadInputAxis_X) < 0.01f || FMath::Abs(m_fGamePadInputAxis_Y) < 0.01f))
-	// {
-	// 	return false;
-	// }
-	// if (Key.IsGamepadKey())
-	// {
-	// 	if (EKeys::Gamepad_LeftX == Key)
-	// 	{
-	// 		m_fGamePadInputAxis_X = Delta;
-	// 		
-	// 	}else if (EKeys::Gamepad_LeftY == Key)
-	// 	{
-	// 		m_fGamePadInputAxis_Y = Delta;
-	// 	}
-	// }
-	// return true;
 	return false;
 }
 

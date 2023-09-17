@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <typeinfo>
 #include "System/GGameInstanceSubsystem.h"
 #include "GEventSubsystem.generated.h"
 

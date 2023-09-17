@@ -24,8 +24,6 @@ public:
 		ED_Right = 0x0002,
 		ED_Forward = 0x0004,
 		ED_Backward = 0x0008,
-		ED_Up = 0x00010,
-		ED_Down = 0x00020,
 	};
 
 protected:
@@ -34,15 +32,9 @@ protected:
 	virtual bool OnTick(float DeltaTime) override;
 	virtual void OnInputKeyDeactivate() override;
 	virtual void SetEnable(bool Enable) override;
-public:
-	float GetJoyInputAngle();
-	bool ShowJoyDirection();
-	void IgnoreJump(bool Ignore);
+
 private:
 	void TickMovement(float DeltaTime);
 private:
 	int MoveDirection;
-	float m_fGamePadInputAxis_X;
-	float m_fGamePadInputAxis_Y;
-	bool IgnorePlayerJump;
 };

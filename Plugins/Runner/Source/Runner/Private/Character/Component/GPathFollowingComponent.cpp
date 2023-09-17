@@ -3,3 +3,11 @@
 
 #include "Character/Component/GPathFollowingComponent.h"
 
+UGPathFollowingComponent::UGPathFollowingComponent()
+{
+}
+
+void UGPathFollowingComponent::OnPathFinished(const FPathFollowingResult& Result)
+{
+	Super::OnPathFinished(Result);
+}

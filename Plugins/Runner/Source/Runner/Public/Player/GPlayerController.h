@@ -7,6 +7,7 @@
 #include "GPlayerController.generated.h"
 
 class UGInputBaseComponent;
+class UGPathFollowingComponent;
 /**
  * 
  */
@@ -28,7 +29,6 @@ protected:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	
 	void HandleKeyDownEvent(const FKeyEvent& InKeyEvent);
 	void HandleKeyUpEvent(const FKeyEvent& InKeyEvent);
 
@@ -50,8 +50,6 @@ public:
 
 protected:
 	virtual void InitInputChildComponent();
-
-protected:
 	/** Handles a key press */
 	virtual bool InputKey(FKey Key, EInputEvent EventType, float AmountDepressed, bool bGamepad) override;
 	/** Handles a touch screen action */
@@ -63,8 +61,12 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, Transient)
 	TArray<UGInputBaseComponent*> InputChildren;
-
+	
 	TMap<ETouchIndex::Type, FVector2D> TouchLocationMap;
-private:
+	
 	TSharedPtr<class SVirtualJoystick_Ex> VirtualJoystick_Ex;
+
+	/** Component used for moving along a path. */
+	UPROPERTY(VisibleDefaultsOnly, Category = AI)
+	UGPathFollowingComponent* PathFollowingComponent;
 };

@@ -5,6 +5,8 @@
 
 #include "Actor/Router/GRouter.h"
 
+#include "Character/Component/GPathFollowingComponent.h"
+
 #include "Config/GGameConfigSettings.h"
 #include "Character/Hero/GHeroFunctions.h"
 #include "Character/Hero/GHeroCharacter.h"
@@ -19,6 +21,8 @@
 #include "Level/GLevelActor.h"
 #include "Level/Loading/GLevelLoadingOpenLevel.h"
 #include "Kismet/GameplayStatics.h"
+
+#include "Navigate/GNavigateFunctions.h"
 
 
 TWeakObjectPtr<UGLevelSubsystem> UGLevelSubsystem::s_Instance =	nullptr;
@@ -70,7 +74,7 @@ AActor* UGLevelSubsystem::GetRouterActor()
 	{
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Name = TEXT("RouterActor");
-		RouterActor = GetWorld()->SpawnActor<AGRouter>(SpawnParameters);
+		RouterActor = GetWorld()->SpawnActor<AActor>(SpawnParameters);
 	}
 
 	return RouterActor.Get();
@@ -129,6 +133,18 @@ bool UGLevelSubsystem::TryPreparePlayer()
 	}
 
 	return true;
+}
+
+void UGLevelSubsystem::NavigateToGoal()
+{
+	if(CurrentLevelConfig->GoalLocation.IsNearlyZero())
+	{
+		return;
+	}
+
+	
+
+	UGNavigateFunctions::NavigateToGoal(CurrentLevelConfig->GoalLocation, nullptr);
 }
 
 bool UGLevelSubsystem::ShouldCreateSubsystem(UObject* Outer) const

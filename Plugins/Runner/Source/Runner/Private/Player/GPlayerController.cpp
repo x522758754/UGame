@@ -8,6 +8,9 @@
 #include "System/GCommonFunctions.h"
 #include "AbilitySystem/GAbilitySystemComponent.h"
 #include "Camera/GPlayerCameraManager.h"
+
+#include "Character/Component/GPathFollowingComponent.h"
+
 #include "Engine/LocalPlayer.h"
 #include "Player/GPlayerState.h"
 #include "GameFramework/PlayerInput.h"
@@ -20,6 +23,8 @@
 AGPlayerController::AGPlayerController(const FObjectInitializer& ObjectInitializer)
 	:Super(ObjectInitializer)
 {
+	PathFollowingComponent = CreateDefaultSubobject<UGPathFollowingComponent>(TEXT("PathFollowingComponent"));
+	
 	PlayerCameraManagerClass = AGPlayerCameraManager::StaticClass();
 	bAutoManageActiveCameraTarget = false;
 }
@@ -39,6 +44,8 @@ void AGPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AGPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
+	PathFollowingComponent->Initialize();
 
 	if(AGPlayerCameraManager* CameraManager = UGCommonFunctions::GetPlayerCameraManager())
 	{
@@ -252,6 +259,7 @@ bool AGPlayerController::InputTouch(uint32 Handle, ETouchType::Type Type, const 
 
 bool AGPlayerController::InputMotion(const FVector& Tilt, const FVector& RotationRate, const FVector& Gravity, const FVector& Acceleration)
 {
+	//陀螺仪运动
 	bool bResult = Super::InputMotion(Tilt, RotationRate, Gravity, Acceleration);
 	for(const auto Input : InputChildren)
 	{

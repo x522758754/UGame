@@ -13,5 +13,11 @@ UCLASS()
 class RUNNER_API UGPathFollowingComponent : public UPathFollowingComponent
 {
 	GENERATED_BODY()
-	
+
+	friend class UGNavigateFunctions;
+public:
+	UGPathFollowingComponent();
+
+protected:
+	virtual void OnPathFinished(const FPathFollowingResult& Result) override;
 };

@@ -27,6 +27,9 @@ struct RUNNER_API FGLevelConfig
 	FTransform BornTransform;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector GoalLocation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSoftObjectPtr<UGLevelNpcConfigAsset> NpcConfigAsset;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
